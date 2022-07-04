@@ -13,12 +13,17 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\""
+    "lint": "eslint src/**/*.js",
+    "prepare": "husky install"
   },
   "keywords": [
     "js",
     "data-binding",
     "vanillaJS",
     "model"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "^8.19.0",
+    "husky": "^8.0.1"
+  }
 }
