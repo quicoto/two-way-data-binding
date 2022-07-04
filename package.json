@@ -1,21 +1,24 @@
 {
-  "name": "@companynamespace/npm-package-template",
-  "version": "1.0.0",
-  "description": "<Package description>",
-  "license": "Apache-2.0",
+  "name": "two-way-data-binding",
+  "version": "0.1.0",
+  "description": "Minimal two way data binding in vanilla JS",
+  "license": "MIT",
   "private": false,
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/companynamespace/npm-package-template"
+    "url": "https://github.com/quicoto/two-way-data-binding"
   },
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\""
   },
   "keywords": [
-    "keyword"
+    "js",
+    "data-binding",
+    "vanillaJS",
+    "model"
   ]
 }
