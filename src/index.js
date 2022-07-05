@@ -1,4 +1,5 @@
-export default function () {
-  // eslint-disable-next-line no-console
-  console.log(`Hello World!`);
+export default function (scope) {
+  const $element = document.querySelector(`[mam-bind="firstName"]`);
+
+  $element.textContent = scope.firstName;
 }
