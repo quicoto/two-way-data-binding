@@ -8,18 +8,21 @@ import {
 describe(`twoWayDataBinding`, () => {
   it(`text content is populated`, () => {
     const {
+      container,
       bindName
     } = render(`
         <span mam-bind="firstName"></span>
       `);
 
-    const scope = {
-      firstName: `Roger`
-    };
-
-    twoWayDataBinding(scope);
+    twoWayDataBinding({
+      $context: container,
+      attributeBind: `mam-bind`,
+      dataModel: {
+        firstName: `Thor`
+      }
+    });
 
     const button = bindName(`firstName`);
-    expect(button).toHaveTextContent(`Roger`);
+    expect(button).toHaveTextContent(`Thor`);
   });
 });
