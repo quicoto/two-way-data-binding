@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/quicoto/two-way-data-binding/compare/v1.1.0...v1.1.1) (2022-07-06)
+
+
+### Bug Fixes
+
+* defines document as default context ([14d3dc8](https://github.com/quicoto/two-way-data-binding/commit/14d3dc88fd0bea0853efb11f6ef4c77e573d3fbd))
+
 # [1.1.0](https://github.com/quicoto/two-way-data-binding/compare/v1.0.0...v1.1.0) (2022-07-06)
 
 
