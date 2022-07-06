@@ -1,3 +1,10 @@
+# 1.0.0 (2022-07-06)
+
+
+### Features
+
+* adds Jest ([50f7b18](https://github.com/quicoto/two-way-data-binding/commit/50f7b18087f09242bf97facaf1963498ef91a4bf))
+
 # 1.0.0 (2021-05-12)
 
 
