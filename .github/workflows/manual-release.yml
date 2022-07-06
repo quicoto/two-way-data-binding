@@ -32,6 +32,7 @@ jobs:
       - name: Release
         uses: cycjimmy/semantic-release-action@v3
         with:
+          semantic_version: 17
           dry_run: ${{ github.event.inputs.dryrun == 'true' }}
           extra_plugins: |
             @semantic-release/changelog@3.0.0
