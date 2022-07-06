@@ -107,7 +107,10 @@ export default function(config) {
   function setModelData() {
     Object.keys($DOMRefs).forEach((key) => {
       const $ref = $DOMRefs[key];
-      const value = getValueByPropertyPath([...key.split(pathDelimiter)], dataModel);
+      const value = getValueByPropertyPath(
+        [...key.split(pathDelimiter)], // ['user', 'name']
+        dataModel
+      );
 
       updateDOM($ref, value);
     });
@@ -117,10 +120,11 @@ export default function(config) {
     events.forEach((eventName) => {
       document.addEventListener(eventName, (DOMEvent) => {
         const { target } = DOMEvent;
+        const path = target.dataset[attributeModel];
 
         // @TODO add event listeners to achieve two way data binding when writing in an input
         // eslint-disable-next-line no-console
-        console.log(attributeModel, target);
+        console.log(path);
       });
     });
   }
