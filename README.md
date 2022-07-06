@@ -10,4 +10,50 @@ Minimal two way data binding in vanilla JS
 
 ## Install
 
-@ToDo
+```bash
+npm i two-way-data-binding
+```
+
+## How to use
+
+```html
+<h1 data-bind="site.name">Default value</h1>
+```
+
+```javascript
+import { default as TwoWayDataBinding } from 'two-way-data-binding'
+
+TwoWayDataBinding({
+  dataModel: {
+    site: {
+      name: 'My Awesome Site'
+    }
+  },
+})
+```
+
+## Configuration
+
+### `$context`
+
+Optional. Defines the context of the data model. Defaults to `document`
+
+### `attributeBind`
+
+Optional. Defines the attribute to bind to in your HTML. Defaults to `data-bind`
+
+### `attributeModel`
+
+Optional. Defines the attribute to bind to in your HTML. Defaults to `data-model`
+
+### `dataModel`
+
+Optional. Defines the data model. Defaults to `{}`
+
+### `events`
+
+Optional. Defines the events to bind to. Defaults to ```[`keyup`, `change`]```
+
+### `pathDelimiter`
+
+Optional. Defines the path delimiter in your `data-bind` attributes such as `header.site.name`. Defaults to `.`
