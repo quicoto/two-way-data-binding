@@ -2,30 +2,30 @@
  * @param {object} config
  * @param {HTMLElement} config.$context
  * @param {string} [config.attributeBind]
- * @param {string} [config.attributeBind]
+ * @param {string} [config.attributeModel]
  * @param {object} [config.dataModel]
  * @param {string[]} [config.events]
  * @param {string} [config.pathDelimiter]
  */
 export default function(config) {
   const {
-    $context,
+    $context = document,
     attributeBind = `data-bind`,
     attributeModel = `data-model`,
     dataModel = {},
     events = [`keyup`, `change`],
     pathDelimiter = `.`
-  } = config
-  let proxy
-  let $DOMRefs = {}
-  let currentPropertyPath = []
+  } = config;
+  let proxy;
+  let $DOMRefs = {};
+  let currentPropertyPath = [];
 
   /**
    * @param  {string} string
    * @return  {boolean}
    */
   function isHTML(string) {
-    return /<\/?[a-z][\s\S]*>/i.test(string)
+    return /<\/?[a-z][\s\S]*>/i.test(string);
   }
 
   /**
@@ -33,24 +33,24 @@ export default function(config) {
    * @return {*[]}
    */
   function ensureArray(possibleArray) {
-    let array
+    let array;
 
     if (typeof possibleArray === `undefined`) {
-      return []
+      return [];
     }
     if (possibleArray.constructor === Array) {
-      return possibleArray
+      return possibleArray;
     }
     switch (possibleArray.constructor) {
       case NodeList:
-        array = Array.prototype.slice.call(possibleArray)
-        break
+        array = Array.prototype.slice.call(possibleArray);
+        break;
       default:
-        array = [possibleArray]
-        break
+        array = [possibleArray];
+        break;
     }
 
-    return array
+    return array;
   }
 
   /**
@@ -62,30 +62,30 @@ export default function(config) {
     const reduceCallback = (prev, curr) => {
       if (prev && typeof prev === `object`) {
         if (prev.constructor === Array) {
-          return prev[+curr]
+          return prev[+curr];
         }
 
-        return prev[curr]
+        return prev[curr];
       }
 
-      return undefined
-    }
-    const value = ensureArray(propertyPath).reduce(reduceCallback, object)
+      return undefined;
+    };
+    const value = ensureArray(propertyPath).reduce(reduceCallback, object);
 
-    return typeof value === `undefined` ? `` : value
+    return typeof value === `undefined` ? `` : value;
   }
 
   /**
    * $DOMRefs is a plain object Object<key.data.model.path,HTMLElement>
    */
   function setDOMRefs() {
-    const $refs = $context.querySelectorAll(`[${attributeBind}]`)
+    const $refs = $context.querySelectorAll(`[${attributeBind}]`);
 
     for (let i = 0, len = $refs.length; i < len; i++) {
-      const $ref = $refs[i]
-      const path = $ref.getAttribute(attributeBind)
+      const $ref = $refs[i];
+      const path = $ref.getAttribute(attributeBind);
 
-      $DOMRefs[path] = $ref
+      $DOMRefs[path] = $ref;
     }
   }
 
@@ -95,9 +95,9 @@ export default function(config) {
    */
   function updateDOM($element, value) {
     if ($element.tagName === `INPUT`) {
-      $element.value = value
+      $element.value = value;
     } else {
-      $element[isHTML(value) ? `innerHTML` : `textContent`] = value
+      $element[isHTML(value) ? `innerHTML` : `textContent`] = value;
     }
   }
 
@@ -106,51 +106,53 @@ export default function(config) {
    */
   function setModelData() {
     Object.keys($DOMRefs).forEach((key) => {
-      const $ref = $DOMRefs[key]
-      const value = getValueByPropertyPath([...key.split(pathDelimiter)], dataModel)
+      const $ref = $DOMRefs[key];
+      const value = getValueByPropertyPath([...key.split(pathDelimiter)], dataModel);
 
-      updateDOM($ref, value)
-    })
+      updateDOM($ref, value);
+    });
   }
 
   function addEventListeners() {
     events.forEach((eventName) => {
       document.addEventListener(eventName, (DOMEvent) => {
-        const { target } = DOMEvent
+        const { target } = DOMEvent;
 
         // @TODO add event listeners to achieve two way data binding when writing in an input
-      })
-    })
+        // eslint-disable-next-line no-console
+        console.log(attributeModel, target);
+      });
+    });
   }
 
   function init() {
     const proxyHandler = {
       get: (data, prop) => {
-        if (typeof data[prop] === 'object' && data[prop] !== null) {
-          currentPropertyPath.push(prop)
-          return new Proxy(data[prop], proxyHandler)
+        if (typeof data[prop] === `object` && data[prop] !== null) {
+          currentPropertyPath.push(prop);
+          return new Proxy(data[prop], proxyHandler);
         } else {
           return data[prop];
         }
       },
       set: (data, prop, value) => {
         data[prop] = value;
-        currentPropertyPath.push(prop)
-        const $element = $DOMRefs[currentPropertyPath.join(pathDelimiter)]
-        updateDOM($element, value)
-        currentPropertyPath = []
+        currentPropertyPath.push(prop);
+        const $element = $DOMRefs[currentPropertyPath.join(pathDelimiter)];
+        updateDOM($element, value);
+        currentPropertyPath = [];
 
-        return true
+        return true;
       }
-    }
+    };
 
-    setDOMRefs()
-    setModelData()
-    addEventListeners()
-    proxy = new Proxy(dataModel, proxyHandler)
+    setDOMRefs();
+    setModelData();
+    addEventListeners();
+    proxy = new Proxy(dataModel, proxyHandler);
   }
 
-  init()
+  init();
 
-  return proxy
+  return proxy;
 }
