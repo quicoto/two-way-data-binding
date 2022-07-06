@@ -6,8 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Develop - Two Way Data Binding</title>
   <script src="index.min.js" defer></script>
+  <style>
+    body { margin: 20px; font-family: Arial, Helvetica, sans-serif; }
+    main { max-width: 800px; margin: 0 auto; }
+  </style>
 </head>
 <body>
-  <h1 data-bind="site.name">Default value</h1>
+  <main>
+    <fieldset>
+      <legend>Deep object bind and model</legend>
+      <h3 data-bind="site.name">Default value</h3>
+      <p>
+        <label for="site-name-input">site.name input</label>
+        <input type="text" data-model="site.name" id="site-name-input">
+      </p>
+    </fieldset>
+  </main>
 </body>
 </html>
