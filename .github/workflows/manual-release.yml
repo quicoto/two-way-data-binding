@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       dryrun:
-        description: 'DryRUn'
+        description: 'DryRun'
         required: true
         default: 'false'
 jobs:
