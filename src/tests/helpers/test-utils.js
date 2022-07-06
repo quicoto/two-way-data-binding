@@ -1,10 +1,10 @@
 import document from './document';
 
-function render(html) {
+function render(html, attributeBind) {
   const container = document.createElement(`div`);
   container.innerHTML = html;
   const bindName = testId =>
-    container.querySelector(`[mam-bind="${testId}"]`);
+    container.querySelector(`[${attributeBind}="${testId}"]`);
   // asFragment has been stolen from react-testing-library
   const asFragment = () =>
     document.createRange().createContextualFragment(container.innerHTML);

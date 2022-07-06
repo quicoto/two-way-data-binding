@@ -6,13 +6,79 @@ import {
 } from './helpers/test-utils';
 
 describe(`twoWayDataBinding`, () => {
-  it(`text content is populated`, () => {
+  it(`Uses a one level object as dataModel`, () => {
     const {
       container,
       bindName
-    } = render(`
-        <span mam-bind="firstName"></span>
-      `);
+    } = render(
+      `<span data-bind="firstName"></span>`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        firstName: `Thor`
+      }
+    });
+
+    const element = bindName(`firstName`);
+    expect(element).toHaveTextContent(`Thor`);
+  });
+
+  it(`Uses a deep object as dataModel`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="user.firstName"></span>`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        user: {
+          firstName: `Thor`
+        }
+      }
+    });
+
+    const element = bindName(`user.firstName`);
+    expect(element).toHaveTextContent(`Thor`);
+  });
+
+  it(`Uses a custom pathDelimiter`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="user-firstName"></span>`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        user: {
+          firstName: `Thor`
+        }
+      },
+      pathDelimiter: `-`
+    });
+
+    const element = bindName(`user-firstName`);
+    expect(element).toHaveTextContent(`Thor`);
+  });
+
+  it(`Uses a custom bind attribute`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span mam-bind="firstName"></span>`,
+      `mam-bind`
+      );
 
     twoWayDataBinding({
       $context: container,
@@ -22,7 +88,7 @@ describe(`twoWayDataBinding`, () => {
       }
     });
 
-    const button = bindName(`firstName`);
-    expect(button).toHaveTextContent(`Thor`);
+    const element = bindName(`firstName`);
+    expect(element).toHaveTextContent(`Thor`);
   });
 });
