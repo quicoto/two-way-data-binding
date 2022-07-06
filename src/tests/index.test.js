@@ -91,4 +91,50 @@ describe(`twoWayDataBinding`, () => {
     const element = bindName(`firstName`);
     expect(element).toHaveTextContent(`Thor`);
   });
+
+  it(`Updates the model after creation simple object`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="firstName"></span>`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        firstName: `Ricard`
+      }
+    });
+
+    proxy.firstName = `Thor`;
+
+    const element = bindName(`firstName`);
+    expect(element).toHaveTextContent(`Thor`);
+  });
+
+  it(`Updates the model after creation deep object`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="site.name"></span>`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        site: {
+          name: `Ricard`
+        }
+      }
+    });
+
+    proxy.site.name = `Thor`;
+
+    const element = bindName(`site.name`);
+    expect(element).toHaveTextContent(`Thor`);
+  });
 });
