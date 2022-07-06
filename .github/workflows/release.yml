@@ -32,7 +32,7 @@ jobs:
       - name: Release
         uses: cycjimmy/semantic-release-action@v2
         with:
-          semantic_version: 17
+          semantic_version: 18
           dry_run: false
           extra_plugins: |
             @semantic-release/changelog
