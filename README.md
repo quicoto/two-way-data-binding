@@ -16,6 +16,8 @@ npm i two-way-data-binding
 
 ## How to use
 
+### Basic usage
+
 ```html
 <h1 data-bind="site.name">Default value</h1>
 ```
@@ -30,6 +32,20 @@ TwoWayDataBinding({
     }
   },
 })
+```
+
+### Update model
+
+```javascript
+const proxy = TwoWayDataBinding({
+  dataModel: {
+    site: {
+      name: 'My Awesome Site'
+    }
+  },
+})
+
+proxy.site.name = `New name`;
 ```
 
 ## Configuration
