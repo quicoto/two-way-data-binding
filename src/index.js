@@ -120,7 +120,7 @@ export default function(config) {
 
   function addEventListeners() {
     events.forEach((eventName) => {
-      document.addEventListener(eventName, (DOMEvent) => {
+      $context.addEventListener(eventName, (DOMEvent) => {
         const { target } = DOMEvent;
 
         const path = target.getAttribute(attributeModel);
