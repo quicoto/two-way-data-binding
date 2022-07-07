@@ -137,4 +137,26 @@ describe(`twoWayDataBinding`, () => {
     const element = bindName(`site.name`);
     expect(element).toHaveTextContent(`Thor`);
   });
+
+  it(`Updates the model with empty string`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="name"></span>`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        name: `Thor`
+      }
+    });
+
+    proxy.name = ``;
+
+    const element = bindName(`name`);
+    expect(element).toHaveTextContent(``);
+  });
 });
