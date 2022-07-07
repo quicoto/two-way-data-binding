@@ -94,7 +94,7 @@ export default function(config) {
    * @param {string} value
    */
   function updateDOM($element, value) {
-    if (!$element || !value) return;
+    if (typeof $element === `undefined` || value === null) return;
 
     if ($element.tagName === `INPUT`) {
       $element.value = value;
