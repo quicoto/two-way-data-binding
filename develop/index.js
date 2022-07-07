@@ -13,5 +13,5 @@ const proxy = TwoWayDataBinding({
 
 setInterval(() => {
   // eslint-disable-next-line no-console
-  console.log(`This is the proxy: `, JSON.stringify(proxy));
+  console.log(`Proxy from demo: `, JSON.stringify(proxy));
 }, 1000);
