@@ -73,3 +73,13 @@ Optional. Defines the events to bind to. Defaults to ```[`keyup`, `change`]```
 ### `pathDelimiter`
 
 Optional. Defines the path delimiter in your `data-bind` attributes such as `header.site.name`. Defaults to `.`
+
+## How to develop
+
+You might want to develop locally. Spawn a local server with:
+
+```bash
+npm run develop
+```
+
+You can change `/develop/index.html` and `/develop/index.js` to your liking.
