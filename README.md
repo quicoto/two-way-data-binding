@@ -14,6 +14,20 @@ Minimal two way data binding in vanilla JS
 npm i two-way-data-binding
 ```
 
+## Browser support
+
+The script does include any polyfills.
+
+| Browser | Version  |
+|---------------|---|
+| Google Chrome | >= 96  |
+| Edge        | >= 92  |
+| Firefox       | >= 91 |
+| Safari        | >= 14  |
+| Opera        | >= 76  |
+| IE        | ❌  |
+
+
 ## How to use
 
 ### Basic usage
