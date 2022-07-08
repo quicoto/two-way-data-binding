@@ -27,7 +27,7 @@ export function isHTMLString(string) {
 
 /**
  * @param {*} value
- * @param {PropertyPath} path
+ * @param {string[]} path
  * @param {object} object
  * @return {*}
  */
@@ -50,4 +50,52 @@ export function setValueByPath(value, path, object) {
   setValueByPath(value, path, object[prop]);
 
   return object[prop];
+}
+
+/**
+ * @param {*} possibleArray
+ * @return {*[]}
+ */
+export function ensureArray(possibleArray) {
+  let array;
+
+  if (typeof possibleArray === `undefined`) {
+    return [];
+  }
+  if (possibleArray.constructor === Array) {
+    return possibleArray;
+  }
+  switch (possibleArray.constructor) {
+    case NodeList:
+      array = Array.prototype.slice.call(possibleArray);
+      break;
+    default:
+      array = [possibleArray];
+      break;
+  }
+
+  return array;
+}
+
+/**
+ * @param {string[]} path
+ * @param {object|array} object
+ * @param {*} [fallback]
+ * @return {*}
+ */
+export function getValueByPath(path, object, fallback) {
+  const reducer = (prev, curr) => {
+    if (prev && typeof prev === `object`) {
+      if (prev.constructor === Array) {
+        return prev[+curr];
+      }
+
+      return prev[curr];
+    }
+
+    return undefined;
+  };
+  const value = ensureArray(path).reduce(reducer, object);
+
+  return typeof value === `undefined` ? fallback : value;
 }

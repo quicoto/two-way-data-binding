@@ -1,4 +1,4 @@
-import { isHTMLElement, isHTMLString, setValueByPath } from "./utils";
+import { getValueByPath, isHTMLElement, isHTMLString, setValueByPath } from "./utils";
 
 /**
  * @param {object} config
@@ -21,6 +21,18 @@ export default function(config) {
   } = config;
   let _proxy;
 
+  function propertyToGet($element) {
+    let propName = ``;
+
+    if ($element.tagName === `INPUT`) {
+      propName = `value`;
+    } else {
+      propName = isHTMLString($element.innerHTML) ? `innerHTML` : `textContent`;
+    }
+
+    return propName;
+  }
+
   /**
    * Set at the same level of every 'data-bind="property.path"' the DOM Element
    * where the value in the model needs to be printed.
@@ -36,13 +48,21 @@ export default function(config) {
 
     for (let i = 0, len = $refs.length; i < len; i++) {
       const $ref = $refs[i];
-      let stringpath = $ref.getAttribute(attributeBind);
-      const lastprop = stringpath.split(pathDelimiter).pop();
-      const path = stringpath
+      const propPathString = $ref.getAttribute(attributeBind);
+      const propPath = propPathString.split(pathDelimiter);
+      const lastprop = [...propPath].pop();
+      // Set the DOM Reference with the same name of the data-bind attribute with domRefPrefix ($)
+      const DOMRefPath = propPathString
         .replace(lastprop, `${domRefPrefix}${lastprop}`)
         .split(pathDelimiter);
 
-      setValueByPath($ref, path, dataModel);
+      setValueByPath($ref, DOMRefPath, dataModel);
+
+      if (!getValueByPath([...propPath], dataModel)) {
+        // Set the value that Element has in the static HTML in case is not
+        // defined in the model
+        setValueByPath($ref[propertyToGet($ref)], [...propPath], dataModel);
+      }
     }
   }
 
@@ -53,11 +73,7 @@ export default function(config) {
   function updateDOM($element, value) {
     if (typeof $element === `undefined` || value === null) return;
 
-    if ($element.tagName === `INPUT`) {
-      $element.value = value;
-    } else {
-      $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
-    }
+    $element[propertyToGet($element)] = value;
   }
 
   /**
@@ -95,7 +111,7 @@ export default function(config) {
   function init() {
     const proxyHandler = {
       get: (data, prop) => {
-        if (typeof data[prop] === `object` && data[prop] !== null) {
+        if (typeof data[prop] === `object` && data[prop] !== null && !isHTMLElement(data[prop])) {
           return new Proxy(data[prop], proxyHandler);
         } else {
           return data[prop];

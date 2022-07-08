@@ -48,6 +48,24 @@ describe(`twoWayDataBinding`, () => {
     expect($element).toHaveTextContent(`Thor`);
   });
 
+  it(`Uses an empty object as dataModel`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="user.firstName">No JS User First Name</span>`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {}
+    });
+
+    const $element = bindName(`user.firstName`);
+    expect($element).toHaveTextContent(`No JS User First Name`);
+  });
+
   it(`Uses a custom pathDelimiter`, () => {
     const {
       container,
