@@ -16,7 +16,7 @@ npm i two-way-data-binding
 
 ## Browser support
 
-The script does include any polyfills.
+The script does **not** include any polyfills.
 
 | Browser | Version  |
 |---------------|---|
@@ -27,13 +27,12 @@ The script does include any polyfills.
 | Opera        | >= 76  |
 | IE        | ❌  |
 
-
 ## How to use
 
 ### Basic usage
 
 ```html
-<h1 data-bind="site.name">Default value</h1>
+<h1 data-bind="name">Default value</h1>
 ```
 
 ```javascript
@@ -41,14 +40,14 @@ import { default as TwoWayDataBinding } from 'two-way-data-binding'
 
 TwoWayDataBinding({
   dataModel: {
-    site: {
-      name: 'My Awesome Site'
-    }
+    name: 'My Awesome Site'
   },
 })
 ```
 
 ### Update model
+
+You can use deep objects too:
 
 ```javascript
 const proxy = TwoWayDataBinding({
