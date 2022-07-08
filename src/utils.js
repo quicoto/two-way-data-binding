@@ -22,7 +22,7 @@ export function isHTMLElement(obj) {
  * @return  {boolean}
  */
 export function isHTMLString(string) {
-  return /<\/?[a-z][\s\S]*>/i.test(string);
+  return /<[a-z]+[^>]*>/gm.test(string?.trim());
 }
 
 /**

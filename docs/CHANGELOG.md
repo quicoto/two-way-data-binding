@@ -1,3 +1,16 @@
+# [1.2.0](https://github.com/quicoto/two-way-data-binding/compare/v1.1.1...v1.2.0) (2022-07-08)
+
+
+### Bug Fixes
+
+* update element even with empty value ([1fb99b7](https://github.com/quicoto/two-way-data-binding/commit/1fb99b7a0efcf2edcd47cd7a4061119adc2caae1))
+* use the $context to scope event listeners ([f2d6943](https://github.com/quicoto/two-way-data-binding/commit/f2d694370ce0297e8fadc465637eeec6297f81d3))
+
+
+### Features
+
+* adds data-model support ([b531da5](https://github.com/quicoto/two-way-data-binding/commit/b531da570388a1a3756774da22519337e1d362fa))
+
 ## [1.1.1](https://github.com/quicoto/two-way-data-binding/compare/v1.1.0...v1.1.1) (2022-07-06)
 
 

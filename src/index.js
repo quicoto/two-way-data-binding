@@ -51,6 +51,8 @@ export default function(config) {
    * @param {string} value
    */
   function updateDOM($element, value) {
+    if (typeof $element === `undefined` || value === null) return;
+
     if ($element.tagName === `INPUT`) {
       $element.value = value;
     } else {
@@ -78,7 +80,7 @@ export default function(config) {
 
   function addEventListeners() {
     events.forEach((eventName) => {
-      document.addEventListener(eventName, (DOMEvent) => {
+      $context.addEventListener(eventName, (DOMEvent) => {
         const { target } = DOMEvent;
 
         if (target.hasAttribute(attributeModel)) {
