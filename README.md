@@ -1,6 +1,6 @@
 # Two way data binding
 
-Minimal two way data binding in vanilla JS
+Minimal no-dependencies 1.2kb (756B gzipped) two way data binding in vanilla JS.
 
 [![Version](https://img.shields.io/npm/v/two-way-data-binding.svg)](https://npmjs.org/package/two-way-data-binding)
 [![Build Status](https://github.com/quicoto/two-way-data-binding/workflows/CI/badge.svg?branch=main)](https://github.com/quicoto/two-way-data-binding/actions)
@@ -14,25 +14,13 @@ Minimal two way data binding in vanilla JS
 npm i two-way-data-binding
 ```
 
-## Browser support
-
-The script does **not** include any polyfills.
-
-| Browser | Version  |
-|---------------|---|
-| Google Chrome | >= 96  |
-| Edge        | >= 92  |
-| Firefox       | >= 91 |
-| Safari        | >= 14  |
-| Opera        | >= 76  |
-| IE        | ❌  |
-
 ## How to use
 
 ### Basic usage
 
 ```html
 <h1 data-bind="name">Default value</h1>
+<input type="text" data-model="name"/>
 ```
 
 ```javascript
@@ -45,7 +33,7 @@ TwoWayDataBinding({
 })
 ```
 
-### Update model
+### Update model via JavaScript
 
 You can use deep objects too:
 
@@ -86,6 +74,19 @@ Optional. Defines the events to bind to. Defaults to ```[`keyup`, `change`]```
 ### `pathDelimiter`
 
 Optional. Defines the path delimiter in your `data-bind` attributes such as `header.site.name`. Defaults to `.`
+
+## Browser support
+
+The script does **not** include any polyfills.
+
+| Browser | Version  |
+|---------------|---|
+| Google Chrome | >= 96  |
+| Edge        | >= 92  |
+| Firefox       | >= 91 |
+| Safari        | >= 14  |
+| Opera        | >= 76  |
+| IE        | ❌  |
 
 ## How to develop
 

@@ -9,23 +9,26 @@
   <style>
     body { margin: 20px; font-family: Arial, Helvetica, sans-serif; }
     main { max-width: 800px; margin: 0 auto; }
-    fieldset { margin-bottom: 20px; }
+    fieldset { margin-bottom: 20px; padding: 20px; }
+    p { margin-bottom: 15px; }
   </style>
 </head>
 <body>
-  <fieldset>
-    <legend>Edit the texts</legend>
-    <label for="heading">Heading</label>
-    <input type="text" id="heading" placeholder="Enter heading" data-custom-model="site.general.heading"/>
-    <label for="description">Description</label>
-    <input type="text" id="description" placeholder="Enter description" data-custom-model="site.general.description"/>
-    <button id="change-heading" data-text="Heading changed by clicking 'Change Heading' button">Change Heading</button>
-    <button id="change-description" data-text="Description changed by clicking 'Change Description' button">Change Description</button>
-  </fieldset>
-  <section id="welcome">
-    <h1 data-custom-bind="site.general.heading">Non-JS heading</h1>
-    <div data-custom-bind="site.general.description">Non-JS despcription</div>
-    <button id="log-state">Print state in console</button>
-  </section>
+  <main>
+    <fieldset>
+      <legend>Edit the texts</legend>
+      <label for="heading">Heading</label>
+      <input type="text" id="heading" placeholder="Enter heading" data-custom-model="site.general.heading"/>
+      <label for="description">Description</label>
+      <input type="text" id="description" placeholder="Enter description" data-custom-model="site.general.description"/>
+      <button id="change-heading" data-text="Heading changed by clicking 'Change Heading' button">Change Heading</button>
+      <button id="change-description" data-text="Description changed by clicking 'Change Description' button">Change Description</button>
+    </fieldset>
+    <section id="welcome">
+      <h1 data-custom-bind="site.general.heading">Non-JS heading</h1>
+      <div data-custom-bind="site.general.description">Non-JS despcription</div>
+      <p><button id="log-state">Print state in console</button></p>
+    </section>
+  </main>
 </body>
 </html>
