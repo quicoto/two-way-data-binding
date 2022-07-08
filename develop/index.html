@@ -13,23 +13,19 @@
   </style>
 </head>
 <body>
-  <main>
-    <fieldset>
-      <legend>Simple object bind and model</legend>
-      <h3 data-bind="name">Default value</h3>
-      <p>
-        <label for="name-input">name input</label>
-        <input type="text" data-model="name" id="name-input">
-      </p>
-    </fieldset>
-    <fieldset>
-      <legend>Deep object bind and model</legend>
-      <h3 data-bind="site.name">Default value</h3>
-      <p>
-        <label for="site-name-input">site.name input</label>
-        <input type="text" data-model="site.name" id="site-name-input">
-      </p>
-    </fieldset>
-  </main>
+  <fieldset>
+    <legend>Edit the texts</legend>
+    <label for="heading">Heading</label>
+    <input type="text" id="heading" placeholder="Enter heading" data-custom-model="site.general.heading"/>
+    <label for="description">Description</label>
+    <input type="text" id="description" placeholder="Enter description" data-custom-model="site.general.description"/>
+    <button id="change-heading" data-text="Heading changed by clicking 'Change Heading' button">Change Heading</button>
+    <button id="change-description" data-text="Description changed by clicking 'Change Description' button">Change Description</button>
+  </fieldset>
+  <section id="welcome">
+    <h1 data-custom-bind="site.general.heading">Non-JS heading</h1>
+    <div data-custom-bind="site.general.description">Non-JS despcription</div>
+    <button id="log-state">Print state in console</button>
+  </section>
 </body>
 </html>

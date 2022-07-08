@@ -1,17 +1,28 @@
-import { default as TwoWayDataBinding } from '../src/index';
+import TwoWayDataBinding from '../src/index';
 
-const dataModel = {
-  name: `Thor`,
-  site: {
-    name: `my awesome site`
+const config = {
+  attributeBind: `data-custom-bind`,
+  attributeModel: `data-custom-model`,
+  dataModel: {
+    site: {
+      general: {
+        heading: `Heading added via JS`,
+        description: `Description added via JS`
+      }
+    }
   }
 };
 
-const proxy = TwoWayDataBinding({
-  dataModel,
-});
+const state = TwoWayDataBinding(config);
 
-setInterval(() => {
-  // eslint-disable-next-line no-console
-  console.log(`Proxy from demo: `, JSON.stringify(proxy));
-}, 1000);
+document.addEventListener(`click`, (event) => {
+  const { target } = event;
+
+  if (target.id === `change-heading`) {
+    state.site.general.heading = target.dataset.text;
+  } else if (target.id === `change-description`) {
+    state.site.general.description = target.dataset.text;
+  } else if (target.id === `log-state`) {
+    console.log(state.site);
+  }
+});

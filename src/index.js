@@ -1,3 +1,5 @@
+import { isHTMLElement, isHTMLString, setValueByPath } from "./utils";
+
 /**
  * @param {object} config
  * @param {HTMLElement} config.$context
@@ -13,79 +15,34 @@ export default function(config) {
     attributeBind = `data-bind`,
     attributeModel = `data-model`,
     dataModel = {},
+    domRefPrefix = `$`,
     events = [`keyup`, `change`],
     pathDelimiter = `.`
   } = config;
-  let proxy;
-  let $DOMRefs = {};
-  let currentPropertyPath = [];
+  let _proxy;
 
   /**
-   * @param  {string} string
-   * @return  {boolean}
+   * Set at the same level of every 'data-bind="property.path"' the DOM Element
+   * where the value in the model needs to be printed.
+   *
+   * dataModel defined on module initialisation:
+   * { foo: { bar: 'bar' } }
+   *
+   * dataModel after appending DOM references:
+   * { foo: { $bar: HTMLElement, bar: 'bar' } }
    */
-  function isHTML(string) {
-    return /<\/?[a-z][\s\S]*>/i.test(string);
-  }
-
-  /**
-   * @param {*} possibleArray
-   * @return {*[]}
-   */
-  function ensureArray(possibleArray) {
-    let array;
-
-    if (typeof possibleArray === `undefined`) {
-      return [];
-    }
-    if (possibleArray.constructor === Array) {
-      return possibleArray;
-    }
-    switch (possibleArray.constructor) {
-      case NodeList:
-        array = Array.prototype.slice.call(possibleArray);
-        break;
-      default:
-        array = [possibleArray];
-        break;
-    }
-
-    return array;
-  }
-
-  /**
-   * @param {PropertyPath} propertyPath
-   * @param {object|array} object
-   * @return {*}
-   */
-  function getValueByPropertyPath(propertyPath, object) {
-    const reduceCallback = (prev, curr) => {
-      if (prev && typeof prev === `object`) {
-        if (prev.constructor === Array) {
-          return prev[+curr];
-        }
-
-        return prev[curr];
-      }
-
-      return undefined;
-    };
-    const value = ensureArray(propertyPath).reduce(reduceCallback, object);
-
-    return typeof value === `undefined` ? `` : value;
-  }
-
-  /**
-   * $DOMRefs is a plain object Object<key.data.model.path,HTMLElement>
-   */
-  function setDOMRefs() {
+  function setDOMRefsInDataModel() {
     const $refs = $context.querySelectorAll(`[${attributeBind}]`);
 
     for (let i = 0, len = $refs.length; i < len; i++) {
       const $ref = $refs[i];
-      const path = $ref.getAttribute(attributeBind);
+      let stringpath = $ref.getAttribute(attributeBind);
+      const lastprop = stringpath.split(pathDelimiter).pop();
+      const path = stringpath
+        .replace(lastprop, `${domRefPrefix}${lastprop}`)
+        .split(pathDelimiter);
 
-      $DOMRefs[path] = $ref;
+      setValueByPath($ref, path, dataModel);
     }
   }
 
@@ -99,23 +56,26 @@ export default function(config) {
     if ($element.tagName === `INPUT`) {
       $element.value = value;
     } else {
-      $element[isHTML(value) ? `innerHTML` : `textContent`] = value;
+      $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
     }
   }
 
   /**
-   * Iterate $DOMRefs to set to every element the value from the dataModel
+   * Considering a (already processed) dataModel:
+   * { foo: { $bar: HTMLElement, bar: 'bar' } }
+   *
+   * Recursive function is executed, when an HTML is found, the DOM is updated
+   * with the text belonging to the same key without '$'
+   * @param  {object} data
    */
-  function setModelData() {
-    Object.keys($DOMRefs).forEach((key) => {
-      const $ref = $DOMRefs[key];
-      const value = getValueByPropertyPath(
-        [...key.split(pathDelimiter)], // ['user', 'name']
-        dataModel
-      );
-
-      updateDOM($ref, value);
-    });
+  function iterateDataModelAndUpdateDOM(data) {
+    for (var key in data) {
+      if (isHTMLElement(data[key])) {
+        updateDOM(data[key], data[key.replace(domRefPrefix, ``)]);
+      } else if (typeof data[key] === `object` && data[key] !== null) {
+        iterateDataModelAndUpdateDOM(data[key]);
+      }
+    }
   }
 
   function addEventListeners() {
@@ -123,13 +83,11 @@ export default function(config) {
       $context.addEventListener(eventName, (DOMEvent) => {
         const { target } = DOMEvent;
 
-        const path = target.getAttribute(attributeModel);
+        if (target.hasAttribute(attributeModel)) {
+          const path = target.getAttribute(attributeModel).split(pathDelimiter);
 
-        proxy[path] = target.value;
-
-        // @TODO add event listeners to achieve two way data binding when writing in an input
-        // eslint-disable-next-line no-console
-        console.log(path);
+          setValueByPath(target.value, path, _proxy);
+        }
       });
     });
   }
@@ -138,7 +96,6 @@ export default function(config) {
     const proxyHandler = {
       get: (data, prop) => {
         if (typeof data[prop] === `object` && data[prop] !== null) {
-          currentPropertyPath.push(prop);
           return new Proxy(data[prop], proxyHandler);
         } else {
           return data[prop];
@@ -146,22 +103,27 @@ export default function(config) {
       },
       set: (data, prop, value) => {
         data[prop] = value;
-        currentPropertyPath.push(prop);
-        const $element = $DOMRefs[currentPropertyPath.join(pathDelimiter)];
-        updateDOM($element, value);
-        currentPropertyPath = [];
 
+        /**
+         * At this point:
+         * 'data' = { $bar: HTMLElement, bar: 'bar' }
+         * 'prop' = 'bar'
+         *
+         * In 'data' the property named as 'prop' prefixed with '$'
+         * contains the HTML reference where to print 'value'
+         */
+        updateDOM(data[`${domRefPrefix}${prop}`], value);
         return true;
       }
     };
 
-    setDOMRefs();
-    setModelData();
+    setDOMRefsInDataModel();
+    iterateDataModelAndUpdateDOM(dataModel, updateDOM);
     addEventListeners();
-    proxy = new Proxy(dataModel, proxyHandler);
+    _proxy = new Proxy(dataModel, proxyHandler);
   }
 
   init();
 
-  return proxy;
+  return _proxy;
 }
