@@ -22,8 +22,8 @@ describe(`twoWayDataBinding`, () => {
       }
     });
 
-    const element = bindName(`firstName`);
-    expect(element).toHaveTextContent(`Thor`);
+    const $element = bindName(`firstName`);
+    expect($element).toHaveTextContent(`Thor`);
   });
 
   it(`Uses a deep object as dataModel`, () => {
@@ -44,8 +44,8 @@ describe(`twoWayDataBinding`, () => {
       }
     });
 
-    const element = bindName(`user.firstName`);
-    expect(element).toHaveTextContent(`Thor`);
+    const $element = bindName(`user.firstName`);
+    expect($element).toHaveTextContent(`Thor`);
   });
 
   it(`Uses a custom pathDelimiter`, () => {
@@ -67,8 +67,8 @@ describe(`twoWayDataBinding`, () => {
       pathDelimiter: `-`
     });
 
-    const element = bindName(`user-firstName`);
-    expect(element).toHaveTextContent(`Thor`);
+    const $element = bindName(`user-firstName`);
+    expect($element).toHaveTextContent(`Thor`);
   });
 
   it(`Uses a custom bind attribute`, () => {
@@ -88,7 +88,127 @@ describe(`twoWayDataBinding`, () => {
       }
     });
 
-    const element = bindName(`firstName`);
-    expect(element).toHaveTextContent(`Thor`);
+    const $element = bindName(`firstName`);
+    expect($element).toHaveTextContent(`Thor`);
+  });
+
+  it(`Updates the model after creation simple object`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="firstName"></span>`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        firstName: `Ricard`
+      }
+    });
+
+    proxy.firstName = `Thor`;
+
+    const $element = bindName(`firstName`);
+    expect($element).toHaveTextContent(`Thor`);
+  });
+
+  it(`Updates the model after creation deep object`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="site.name"></span>`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        site: {
+          name: `Ricard`
+        }
+      }
+    });
+
+    proxy.site.name = `Thor`;
+
+    const $element = bindName(`site.name`);
+    expect($element).toHaveTextContent(`Thor`);
+  });
+
+  it(`Updates the model with empty string`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="name"></span>`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        name: `Thor`
+      }
+    });
+
+    proxy.name = ``;
+
+    const $element = bindName(`name`);
+    expect($element).toHaveTextContent(``);
+  });
+
+  it(`Updates the simple model from an input`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="name"></span>
+      <input data-model="name" type="text" value="Roger" />`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container
+    });
+
+    const $span = bindName(`name`);
+    const $input = bindName(`name`, `data-model`);
+    const changeEvent = document.createEvent(`Event`);
+
+    changeEvent.initEvent(`change`, true, true);
+    $input.value = `Ricard`;
+    $input.dispatchEvent(changeEvent);
+
+    expect($input).toHaveValue(`Ricard`);
+    expect($span).toHaveTextContent(`Ricard`);
+  });
+
+  it(`Updates the deep model from an input`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="site.name"></span>
+      <input data-model="site.name" type="text" value="Roger" />`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container
+    });
+
+    const element = bindName(`site.name`);
+    const $input = bindName(`site.name`, `data-model`);
+    const changeEvent = document.createEvent(`Event`);
+
+    changeEvent.initEvent(`change`, true, true);
+    $input.value = `Ricard`;
+    $input.dispatchEvent(changeEvent);
+
+    expect($input).toHaveValue(`Ricard`);
+    expect(element).toHaveTextContent(`Ricard`);
   });
 });

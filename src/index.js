@@ -94,6 +94,8 @@ export default function(config) {
    * @param {string} value
    */
   function updateDOM($element, value) {
+    if (typeof $element === `undefined` || value === null) return;
+
     if ($element.tagName === `INPUT`) {
       $element.value = value;
     } else {
@@ -118,9 +120,12 @@ export default function(config) {
 
   function addEventListeners() {
     events.forEach((eventName) => {
-      document.addEventListener(eventName, (DOMEvent) => {
+      $context.addEventListener(eventName, (DOMEvent) => {
         const { target } = DOMEvent;
-        const path = target.dataset[attributeModel];
+
+        const path = target.getAttribute(attributeModel);
+
+        proxy[path] = target.value;
 
         // @TODO add event listeners to achieve two way data binding when writing in an input
         // eslint-disable-next-line no-console

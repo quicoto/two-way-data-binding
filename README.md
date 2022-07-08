@@ -14,7 +14,23 @@ Minimal two way data binding in vanilla JS
 npm i two-way-data-binding
 ```
 
+## Browser support
+
+The script does include any polyfills.
+
+| Browser | Version  |
+|---------------|---|
+| Google Chrome | >= 96  |
+| Edge        | >= 92  |
+| Firefox       | >= 91 |
+| Safari        | >= 14  |
+| Opera        | >= 76  |
+| IE        | ❌  |
+
+
 ## How to use
+
+### Basic usage
 
 ```html
 <h1 data-bind="site.name">Default value</h1>
@@ -30,6 +46,20 @@ TwoWayDataBinding({
     }
   },
 })
+```
+
+### Update model
+
+```javascript
+const proxy = TwoWayDataBinding({
+  dataModel: {
+    site: {
+      name: 'My Awesome Site'
+    }
+  },
+})
+
+proxy.site.name = `New name`;
 ```
 
 ## Configuration
@@ -57,3 +87,13 @@ Optional. Defines the events to bind to. Defaults to ```[`keyup`, `change`]```
 ### `pathDelimiter`
 
 Optional. Defines the path delimiter in your `data-bind` attributes such as `header.site.name`. Defaults to `.`
+
+## How to develop
+
+You might want to develop locally. Spawn a local server with:
+
+```bash
+npm run develop
+```
+
+You can change `/develop/index.html` and `/develop/index.js` to your liking.

@@ -3,8 +3,8 @@ import document from './document';
 function render(html, attributeBind) {
   const container = document.createElement(`div`);
   container.innerHTML = html;
-  const bindName = testId =>
-    container.querySelector(`[${attributeBind}="${testId}"]`);
+  const bindName = (testId, attribute) =>
+    container.querySelector(`[${attribute ? attribute : attributeBind}="${testId}"]`);
   // asFragment has been stolen from react-testing-library
   const asFragment = () =>
     document.createRange().createContextualFragment(container.innerHTML);
