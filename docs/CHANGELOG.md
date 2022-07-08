@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/quicoto/two-way-data-binding/compare/v1.2.0...v1.3.0) (2022-07-08)
+
+
+### Features
+
+* add two-way data binding ([4f62808](https://github.com/quicoto/two-way-data-binding/commit/4f62808343e9e2bfd87cc932affaa4c0fee17548))
+
 # [1.2.0](https://github.com/quicoto/two-way-data-binding/compare/v1.1.1...v1.2.0) (2022-07-08)
 
 
