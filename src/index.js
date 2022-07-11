@@ -73,7 +73,7 @@ export default function(config) {
   function updateDOM($element, value) {
     if (typeof $element === `undefined` || value === null) return;
 
-    $element[propertyToGet($element)] = value;
+    $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
   }
 
   /**

@@ -229,4 +229,24 @@ describe(`twoWayDataBinding`, () => {
     expect($input).toHaveValue(`Ricard`);
     expect(element).toHaveTextContent(`Ricard`);
   });
+
+  it(`Uses a one level object as dataModel with HTML`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="firstName"></span>`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        firstName: `<span>Thor</span>`
+      }
+    });
+
+    const $element = bindName(`firstName`);
+    expect($element).toContainHTML(`<span>Thor</span>`);
+  });
 });
