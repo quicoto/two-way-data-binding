@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/quicoto/two-way-data-binding/compare/v1.3.0...v1.3.1) (2022-07-11)
+
+
+### Bug Fixes
+
+* replicate model based on DOM elements ([b323cc6](https://github.com/quicoto/two-way-data-binding/commit/b323cc6716f4c5bcf81548710da676b9eced3b0c))
+
 # [1.3.0](https://github.com/quicoto/two-way-data-binding/compare/v1.2.0...v1.3.0) (2022-07-08)
 
 
