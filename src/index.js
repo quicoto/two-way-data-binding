@@ -2,7 +2,7 @@ import { getValueByPath, isHTMLElement, isHTMLString, setValueByPath } from "./u
 
 /**
  * @param {object} config
- * @param {HTMLElement} config.$context
+ * @param {HTMLElement} [config.$context]
  * @param {string} [config.attributeBind]
  * @param {string} [config.attributeModel]
  * @param {object} [config.dataModel]
