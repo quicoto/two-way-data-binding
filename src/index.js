@@ -85,7 +85,7 @@ export default function(config) {
    * @param  {object} data
    */
   function iterateDataModelAndUpdateDOM(data) {
-    for (var key in data) {
+    for (const key in data) {
       if (isHTMLElement(data[key])) {
         updateDOM(data[key], data[key.replace(domRefPrefix, ``)]);
       } else if (typeof data[key] === `object` && data[key] !== null) {
