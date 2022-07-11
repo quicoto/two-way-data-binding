@@ -7,6 +7,16 @@
   "publishConfig": {
     "access": "public"
   },
+  "contributors": [
+    {
+      "name": "Roger Cornet",
+      "email": "cornet.roger@gmail.com"
+    },
+    {
+      "name": "Ricard Torres",
+      "email": "torres.rick@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/quicoto/two-way-data-binding"
