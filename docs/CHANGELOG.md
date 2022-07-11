@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/quicoto/two-way-data-binding/compare/v1.3.1...v1.3.2) (2022-07-11)
+
+
+### Bug Fixes
+
+* change var -> const in for in loop ([bbcc33e](https://github.com/quicoto/two-way-data-binding/commit/bbcc33ec6d2fe9aac078d45b413dd64a6cbbd1b1))
+
 ## [1.3.1](https://github.com/quicoto/two-way-data-binding/compare/v1.3.0...v1.3.1) (2022-07-11)
 
 
