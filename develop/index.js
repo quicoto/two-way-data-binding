@@ -3,14 +3,7 @@ import TwoWayDataBinding from '../src/index';
 const config = {
   attributeBind: `data-custom-bind`,
   attributeModel: `data-custom-model`,
-  dataModel: {
-    site: {
-      general: {
-        heading: `Heading added via JS`,
-        description: `Description added via JS`
-      }
-    }
-  }
+  dataModel: {}
 };
 
 const state = TwoWayDataBinding(config);
