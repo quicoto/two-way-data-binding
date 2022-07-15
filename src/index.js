@@ -25,7 +25,11 @@ export default function(config) {
     let propName = ``;
 
     if ($element.tagName === `INPUT`) {
-      propName = `value`;
+      if ($element.type === `checkbox` || $element.type === `radio`) {
+        propName = `checked`;
+      } else {
+        propName = `value`;
+      }
     } else {
       propName = isHTMLString($element.innerHTML) ? `innerHTML` : `textContent`;
     }
@@ -58,7 +62,7 @@ export default function(config) {
 
       setValueByPath($ref, DOMRefPath, dataModel);
 
-      if (!getValueByPath([...propPath], dataModel)) {
+      if (typeof getValueByPath([...propPath], dataModel) === `undefined`) {
         // Set the value that Element has in the static HTML in case is not
         // defined in the model
         setValueByPath($ref[propertyToGet($ref)], [...propPath], dataModel);
@@ -72,8 +76,23 @@ export default function(config) {
    */
   function updateDOM($element, value) {
     if (typeof $element === `undefined` || value === null) return;
+    if ($element.tagName === `INPUT`) {
+      if ($element.type === `checkbox` || $element.type === `radio`) {
+        let checked = value;
 
-    $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
+        // Make sure we're setting a boolean
+        if (typeof checked !== `boolean`) {
+          // Convert string to boolean
+          checked = value.toLowerCase() === `true` ? true : false;
+        }
+
+        $element.checked = checked;
+      } else {
+        $element.value = value;
+      }
+    } else {
+      $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
+    }
   }
 
   /**
@@ -100,9 +119,16 @@ export default function(config) {
         const { target } = DOMEvent;
 
         if (target.hasAttribute(attributeModel)) {
+          let value = target.value;
           const path = target.getAttribute(attributeModel).split(pathDelimiter);
 
-          setValueByPath(target.value, path, _proxy);
+          if (target.tagName === `INPUT`) {
+            if (target.type === `checkbox` || target.type === `radio`) {
+              value = target.checked;
+            }
+          }
+
+          setValueByPath(value, path, _proxy);
         }
       });
     });
