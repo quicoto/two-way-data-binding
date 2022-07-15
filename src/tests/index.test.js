@@ -423,4 +423,50 @@ describe(`twoWayDataBinding`, () => {
     expect($element).toBeChecked();
   });
 
+  it(`Textarea with bind`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<textarea data-bind="myText"></textarea>`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        myText: `This is a long text`
+      }
+    });
+
+    const $element = bindName(`myText`);
+    expect($element).toHaveTextContent(`This is a long text`);
+  });
+
+  it(`Textarea with model`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<textarea data-bind="myText" data-model="myText">Default</textarea>`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        myText: `This is a long text`
+      }
+    });
+
+    const $element = bindName(`myText`);
+    const changeEvent = document.createEvent(`Event`);
+
+    $element.textContent = `New content`;
+
+    changeEvent.initEvent(`change`, true, true);
+    $element.dispatchEvent(changeEvent);
+
+    expect(proxy.myText).toEqual(`New content`);
+  });
 });
