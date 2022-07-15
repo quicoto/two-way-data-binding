@@ -249,4 +249,178 @@ describe(`twoWayDataBinding`, () => {
     const $element = bindName(`firstName`);
     expect($element).toContainHTML(`<span>Thor</span>`);
   });
+
+  it(`Input text with bind`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input type="text" value="thor" data-bind="name" />`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        name: `Roger`
+      }
+    });
+
+    const $input = bindName(`name`);
+    expect($input).toHaveValue(`Roger`);
+  });
+
+  it(`Input text with model`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input type="text" value="thor" data-bind="name" data-model="name" />`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        name: `Roger`
+      }
+    });
+
+    const changeEvent = document.createEvent(`Event`);
+    const $input = bindName(`name`);
+
+    $input.value = `Ricard`;
+
+    changeEvent.initEvent(`change`, true, true);
+    $input.dispatchEvent(changeEvent);
+
+    expect(proxy.name).toEqual(`Ricard`);
+  });
+
+  it(`Checkbox with bind to false`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input type="checkbox" value="thor" data-bind="areYouThor" checked />`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        areYouThor: false
+      }
+    });
+
+    const $input = bindName(`areYouThor`);
+    expect($input).not.toBeChecked();
+  });
+
+  it(`Checkbox with bind to true`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input type="checkbox" value="thor" data-bind="areYouThor" />`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        areYouThor: true
+      }
+    });
+
+    const $input = bindName(`areYouThor`);
+    expect($input).toBeChecked();
+  });
+
+  it(`Checkbox checked manually to true`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input type="checkbox" value="thor" data-bind="areYouThor" data-model="areYouThor" />`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container
+    });
+
+    const changeEvent = document.createEvent(`Event`);
+    const $input = bindName(`areYouThor`);
+
+    changeEvent.initEvent(`change`, true, true);
+    $input.checked = true;
+    $input.dispatchEvent(changeEvent);
+
+    expect(proxy.areYouThor).toEqual(true);
+  });
+
+  it(`Checkbox checked manually to false`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input type="checkbox" value="thor" data-bind="areYouThor" data-model="areYouThor" checked />`,
+      `data-bind`
+      );
+
+    const proxy = twoWayDataBinding({
+      $context: container
+    });
+
+    const changeEvent = document.createEvent(`Event`);
+    const $input = bindName(`areYouThor`);
+
+    changeEvent.initEvent(`change`, true, true);
+    $input.checked = false;
+    $input.dispatchEvent(changeEvent);
+
+    expect(proxy.areYouThor).toEqual(false);
+  });
+
+  it(`Radio with bind to false`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input type="radio" value="thor" data-bind="areYouThor" checked />`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        areYouThor: false
+      }
+    });
+
+    const $element = bindName(`areYouThor`);
+    expect($element).not.toBeChecked();
+  });
+
+  it(`Radio with bind to true`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input type="radio" value="thor" data-bind="areYouThor" />`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        areYouThor: true
+      }
+    });
+
+    const $element = bindName(`areYouThor`);
+    expect($element).toBeChecked();
+  });
+
 });

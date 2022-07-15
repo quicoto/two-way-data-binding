@@ -19,3 +19,7 @@ document.addEventListener(`click`, (event) => {
     console.log(state.site);
   }
 });
+
+setInterval(() => {
+  console.log(JSON.stringify(state));
+}, 1000);
