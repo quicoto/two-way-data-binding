@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/quicoto/two-way-data-binding/compare/v1.3.3...v1.4.0) (2022-07-15)
+
+
+### Features
+
+* enables input radio and checkboxes ([c3a6ebc](https://github.com/quicoto/two-way-data-binding/commit/c3a6ebcd78eb60def42cddd1f0b3fa5735d169a2))
+
 ## [1.3.3](https://github.com/quicoto/two-way-data-binding/compare/v1.3.2...v1.3.3) (2022-07-11)
 
 
