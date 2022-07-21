@@ -9,7 +9,7 @@ import { getValueByPath, isHTMLElement, isHTMLString, setValueByPath } from "./u
  * @param {string[]} [config.events]
  * @param {string} [config.pathDelimiter]
  */
-export default function(config) {
+export default function(config = {}) {
   const {
     $context = document,
     attributeBind = `data-bind`,

@@ -24,13 +24,26 @@ npm i two-way-data-binding
 ```
 
 ```javascript
-import { default as TwoWayDataBinding } from 'two-way-data-binding'
+import TwoWayDataBinding from 'two-way-data-binding'
 
 TwoWayDataBinding({
   dataModel: {
     name: 'My Awesome Site'
   },
 })
+```
+
+### Several elements with the same bind
+
+```html
+<p data-bind="description">Default description</p>
+<input type="text" data-bind="description" data-model="description"/>
+```
+
+```javascript
+import TwoWayDataBinding from 'two-way-data-binding'
+
+TwoWayDataBinding()
 ```
 
 ### Update model via JavaScript
