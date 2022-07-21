@@ -443,6 +443,30 @@ describe(`twoWayDataBinding`, () => {
     expect($element).toHaveTextContent(`This is a long text`);
   });
 
+  it(`2 elements with same bind path`, () => {
+    const {
+      container,
+      bindNames
+    } = render(
+      `<p data-bind="myDescription"></p>
+       <p data-bind="myDescription"></p>`,
+      `data-bind`
+      );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        myDescription: `Two elements with same description`
+      }
+    });
+
+    const $elements = bindNames(`myDescription`);
+
+    $elements.forEach(($element) => {
+      expect($element).toHaveTextContent(`Two elements with same description`);
+    });
+  });
+
   it(`Textarea with model`, () => {
     const {
       container,

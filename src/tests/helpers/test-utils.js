@@ -5,6 +5,8 @@ function render(html, attributeBind) {
   container.innerHTML = html;
   const bindName = (testId, attribute) =>
     container.querySelector(`[${attribute ? attribute : attributeBind}="${testId}"]`);
+  const bindNames = (testId, attribute) =>
+    container.querySelectorAll(`[${attribute ? attribute : attributeBind}="${testId}"]`);
   // asFragment has been stolen from react-testing-library
   const asFragment = () =>
     document.createRange().createContextualFragment(container.innerHTML);
@@ -14,7 +16,7 @@ function render(html, attributeBind) {
   document.body.innerHTML = ``;
   document.body.appendChild(container);
 
-  return {container, bindName, asFragment};
+  return {container, bindName, bindNames, asFragment};
 }
 
 export {render};
