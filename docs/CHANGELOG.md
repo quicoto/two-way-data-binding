@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/quicoto/two-way-data-binding/compare/v1.4.0...v1.4.1) (2022-07-22)
+
+
+### Bug Fixes
+
+* Allow multiple elements with the same data-bind attribute name ([2d0c27c](https://github.com/quicoto/two-way-data-binding/commit/2d0c27c722dd392be487af1e16e426530aa09f99))
+
 # [1.4.0](https://github.com/quicoto/two-way-data-binding/compare/v1.3.3...v1.4.0) (2022-07-15)
 
 
