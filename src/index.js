@@ -9,7 +9,7 @@ import { getValueByPath, isHTMLElement, isHTMLString, setValueByPath } from "./u
  * @param {string[]} [config.events]
  * @param {string} [config.pathDelimiter]
  */
-export default function(config) {
+export default function(config = {}) {
   const {
     $context = document,
     attributeBind = `data-bind`,
@@ -60,7 +60,10 @@ export default function(config) {
         .replace(lastprop, `${domRefPrefix}${lastprop}`)
         .split(pathDelimiter);
 
-      setValueByPath($ref, DOMRefPath, dataModel);
+      // Concat the possible value to have an array of elements
+      const $currentRef = getValueByPath(DOMRefPath, dataModel) || ``;
+
+      setValueByPath([$ref, ...$currentRef], DOMRefPath, dataModel);
 
       if (typeof getValueByPath([...propPath], dataModel) === `undefined`) {
         // Set the value that Element has in the static HTML in case is not
@@ -71,28 +74,31 @@ export default function(config) {
   }
 
   /**
-   * @param {HTMLElement} $element
+   * @param {HTMLElement[]} $elements
    * @param {string} value
    */
-  function updateDOM($element, value) {
-    if (typeof $element === `undefined` || value === null) return;
-    if ($element.tagName === `INPUT`) {
-      if ($element.type === `checkbox` || $element.type === `radio`) {
-        let checked = value;
+  function updateDOM($elements, value) {
+    if (typeof $elements === `undefined` || value === null) return;
 
-        // Make sure we're setting a boolean
-        if (typeof checked !== `boolean`) {
-          // Convert string to boolean
-          checked = value.toLowerCase() === `true` ? true : false;
+    $elements.forEach(($element) => {
+      if ($element.tagName === `INPUT`) {
+        if ($element.type === `checkbox` || $element.type === `radio`) {
+          let checked = value;
+
+          // Make sure we're setting a boolean
+          if (typeof checked !== `boolean`) {
+            // Convert string to boolean
+            checked = value.toLowerCase() === `true` ? true : false;
+          }
+
+          $element.checked = checked;
+        } else {
+          $element.value = value;
         }
-
-        $element.checked = checked;
       } else {
-        $element.value = value;
+        $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
       }
-    } else {
-      $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
-    }
+    });
   }
 
   /**
@@ -105,7 +111,7 @@ export default function(config) {
    */
   function iterateDataModelAndUpdateDOM(data) {
     for (const key in data) {
-      if (isHTMLElement(data[key])) {
+      if (Array.isArray(data[key]) && data[key]?.every(($el) => isHTMLElement($el))) {
         updateDOM(data[key], data[key.replace(domRefPrefix, ``)]);
       } else if (typeof data[key] === `object` && data[key] !== null) {
         iterateDataModelAndUpdateDOM(data[key]);
