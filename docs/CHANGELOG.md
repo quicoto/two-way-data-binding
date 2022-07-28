@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/quicoto/two-way-data-binding/compare/v1.4.1...v1.5.0) (2022-07-28)
+
+
+### Features
+
+* support form select ([f42553b](https://github.com/quicoto/two-way-data-binding/commit/f42553bebabea2337c9ebc4eedd87cfc9ea13e78)), closes [#23](https://github.com/quicoto/two-way-data-binding/issues/23)
+
 ## [1.4.1](https://github.com/quicoto/two-way-data-binding/compare/v1.4.0...v1.4.1) (2022-07-22)
 
 
