@@ -1,4 +1,6 @@
-import { getValueByPath, isHTMLElement, isHTMLString, setValueByPath } from "./utils";
+import {
+  getValueByPath, isHTMLElement, isHTMLString, setValueByPath
+} from "./utils";
 
 /**
  * @param {object} config
@@ -9,7 +11,7 @@ import { getValueByPath, isHTMLElement, isHTMLString, setValueByPath } from "./u
  * @param {string[]} [config.events]
  * @param {string} [config.pathDelimiter]
  */
-export default function(config = {}) {
+export default (config = {}) => {
   const {
     $context = document,
     attributeBind = `data-bind`,
@@ -30,6 +32,8 @@ export default function(config = {}) {
       } else {
         propName = `value`;
       }
+    } else if ($element.tagName === `SELECT`) {
+      propName = `value`;
     } else {
       propName = isHTMLString($element.innerHTML) ? `innerHTML` : `textContent`;
     }
@@ -50,7 +54,7 @@ export default function(config = {}) {
   function setDOMRefsInDataModel() {
     const $refs = $context.querySelectorAll(`[${attributeBind}]`);
 
-    for (let i = 0, len = $refs.length; i < len; i++) {
+    for (let i = 0, len = $refs.length; i < len; i += 1) {
       const $ref = $refs[i];
       const propPathString = $ref.getAttribute(attributeBind);
       const propPath = propPathString.split(pathDelimiter);
@@ -88,13 +92,15 @@ export default function(config = {}) {
           // Make sure we're setting a boolean
           if (typeof checked !== `boolean`) {
             // Convert string to boolean
-            checked = value.toLowerCase() === `true` ? true : false;
+            checked = value.toLowerCase() === `true`;
           }
 
           $element.checked = checked;
         } else {
           $element.value = value;
         }
+      } else if ($element.tagName === `SELECT`) {
+        $element.value = value;
       } else {
         $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
       }
@@ -110,13 +116,13 @@ export default function(config = {}) {
    * @param  {object} data
    */
   function iterateDataModelAndUpdateDOM(data) {
-    for (const key in data) {
+    Object.keys(data).forEach((key) => {
       if (Array.isArray(data[key]) && data[key]?.every(($el) => isHTMLElement($el))) {
         updateDOM(data[key], data[key.replace(domRefPrefix, ``)]);
       } else if (typeof data[key] === `object` && data[key] !== null) {
         iterateDataModelAndUpdateDOM(data[key]);
       }
-    }
+    });
   }
 
   function addEventListeners() {
@@ -125,7 +131,8 @@ export default function(config = {}) {
         const { target } = DOMEvent;
 
         if (target.hasAttribute(attributeModel)) {
-          let value = target.value;
+          let { value } = target;
+
           const path = target.getAttribute(attributeModel).split(pathDelimiter);
 
           if (target.tagName === `INPUT`) {
@@ -145,9 +152,8 @@ export default function(config = {}) {
       get: (data, prop) => {
         if (typeof data[prop] === `object` && data[prop] !== null && !isHTMLElement(data[prop])) {
           return new Proxy(data[prop], proxyHandler);
-        } else {
-          return data[prop];
         }
+        return data[prop];
       },
       set: (data, prop, value) => {
         data[prop] = value;
@@ -174,4 +180,4 @@ export default function(config = {}) {
   init();
 
   return _proxy;
-}
+};
