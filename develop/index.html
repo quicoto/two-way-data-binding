@@ -5,19 +5,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Develop - Two Way Data Binding</title>
-  <script src="index.min.js" defer></script>
+  <script src="./index.min.js" defer></script>
   <style>
     body { margin: 20px; font-family: Arial, Helvetica, sans-serif; }
     main { max-width: 800px; margin: 0 auto; }
     fieldset { margin-bottom: 20px; padding: 20px; }
-    p { margin-bottom: 15px; }
+    p { margin-top: 0; margin-bottom: 15px; }
   </style>
 </head>
 <body>
   <main>
     <section id="welcome">
       <h1 data-custom-bind="site.general.heading">Non-JS heading</h1>
-      <div data-custom-bind="site.general.description">Non-JS despcription</div>
+      <p data-custom-bind="site.general.description">Non-JS despcription</p>
       <p><button id="log-state">Print state in console</button></p>
     </section>
     <fieldset>
@@ -28,6 +28,15 @@
       <input type="text" id="description" placeholder="Enter description" data-custom-model="site.general.description"/>
       <button id="change-heading" data-text="Heading changed by clicking 'Change Heading' button">Change Heading</button>
       <button id="change-description" data-text="Description changed by clicking 'Change Description' button">Change Description</button>
+    </fieldset>
+    <fieldset>
+      <legend>Select</legend>
+      <p>You have selected: <span data-custom-bind="pet"></span></p>
+      <select name="pets" id="pet-select" data-custom-bind="pet" data-custom-model="pet">
+        <option value="">Please choose an option</option>
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+      </select>
     </fieldset>
   </main>
 </body>

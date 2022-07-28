@@ -1,9 +1,5 @@
-import {
-  default as twoWayDataBinding
-} from '../index';
-import {
-  render
-} from './helpers/test-utils';
+import twoWayDataBinding from '../index';
+import { render } from './helpers/test-utils';
 
 describe(`twoWayDataBinding`, () => {
   it(`Uses a one level object as dataModel`, () => {
@@ -13,7 +9,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span data-bind="firstName"></span>`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -33,7 +29,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span data-bind="user.firstName"></span>`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -55,7 +51,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span data-bind="user.firstName">No JS User First Name</span>`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -73,7 +69,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span data-bind="user-firstName"></span>`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -96,7 +92,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span mam-bind="firstName"></span>`,
       `mam-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -117,7 +113,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span data-bind="firstName"></span>`,
       `data-bind`
-      );
+    );
 
     const proxy = twoWayDataBinding({
       $context: container,
@@ -139,7 +135,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span data-bind="site.name"></span>`,
       `data-bind`
-      );
+    );
 
     const proxy = twoWayDataBinding({
       $context: container,
@@ -163,7 +159,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span data-bind="name"></span>`,
       `data-bind`
-      );
+    );
 
     const proxy = twoWayDataBinding({
       $context: container,
@@ -186,7 +182,7 @@ describe(`twoWayDataBinding`, () => {
       `<span data-bind="name"></span>
       <input data-model="name" type="text" value="Roger" />`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container
@@ -212,7 +208,7 @@ describe(`twoWayDataBinding`, () => {
       `<span data-bind="site.name"></span>
       <input data-model="site.name" type="text" value="Roger" />`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container
@@ -237,7 +233,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<span data-bind="firstName"></span>`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -257,7 +253,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<input type="text" value="thor" data-bind="name" />`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -277,7 +273,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<input type="text" value="thor" data-bind="name" data-model="name" />`,
       `data-bind`
-      );
+    );
 
     const proxy = twoWayDataBinding({
       $context: container,
@@ -304,7 +300,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<input type="checkbox" value="thor" data-bind="areYouThor" checked />`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -324,7 +320,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<input type="checkbox" value="thor" data-bind="areYouThor" />`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -344,7 +340,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<input type="checkbox" value="thor" data-bind="areYouThor" data-model="areYouThor" />`,
       `data-bind`
-      );
+    );
 
     const proxy = twoWayDataBinding({
       $context: container
@@ -367,7 +363,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<input type="checkbox" value="thor" data-bind="areYouThor" data-model="areYouThor" checked />`,
       `data-bind`
-      );
+    );
 
     const proxy = twoWayDataBinding({
       $context: container
@@ -390,7 +386,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<input type="radio" value="thor" data-bind="areYouThor" checked />`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -410,7 +406,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<input type="radio" value="thor" data-bind="areYouThor" />`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -430,7 +426,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<textarea data-bind="myText"></textarea>`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -451,7 +447,7 @@ describe(`twoWayDataBinding`, () => {
       `<p data-bind="myDescription"></p>
        <p data-bind="myDescription"></p>`,
       `data-bind`
-      );
+    );
 
     twoWayDataBinding({
       $context: container,
@@ -474,7 +470,7 @@ describe(`twoWayDataBinding`, () => {
     } = render(
       `<textarea data-bind="myText" data-model="myText">Default</textarea>`,
       `data-bind`
-      );
+    );
 
     const proxy = twoWayDataBinding({
       $context: container,
@@ -492,5 +488,60 @@ describe(`twoWayDataBinding`, () => {
     $element.dispatchEvent(changeEvent);
 
     expect(proxy.myText).toEqual(`New content`);
+  });
+
+  it(`Select via JS (data-bind)`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<select name="pets" id="pet-select" data-bind="pet">
+        <option value="">--Please choose an option--</option>
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+      </select>`,
+      `data-bind`
+    );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        pet: `cat`
+      }
+    });
+
+    const $element = bindName(`pet`);
+
+    expect($element.value).toEqual(`cat`);
+    expect($element.selectedIndex).toEqual(2);
+  });
+
+  it(`Select via DOM (data-model)`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<select name="pets" id="pet-select" data-model="pet" data-bind="pet">
+        <option value="">--Please choose an option--</option>
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+      </select>`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {}
+    });
+
+    const $element = bindName(`pet`);
+    const changeEvent = document.createEvent(`Event`);
+
+    $element.value = `cat`;
+
+    changeEvent.initEvent(`change`, true, true);
+    $element.dispatchEvent(changeEvent);
+
+    expect(proxy.pet).toEqual(`cat`);
   });
 });

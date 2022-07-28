@@ -1,5 +1,5 @@
 {
-  "extends": "eslint:recommended",
+  "extends": "airbnb-base",
   "env": {
     "browser": true,
     "node": true,
@@ -14,7 +14,12 @@
     "Proxy": true
   },
   "rules": {
+    "comma-dangle": ["error", "never"],
+    "no-underscore-dangle": "off",
     "semi": ["error", "always"],
+    "import/prefer-default-export": "off",
+    "no-param-reassign": "off",
+    "global-require": "off",
     "quotes": ["error", "backtick"]
   }
 }

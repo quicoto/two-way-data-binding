@@ -16,6 +16,14 @@ npm i two-way-data-binding
 
 ## How to use
 
+It works with DOM elements such as:
+
+- Layout: div, span, p, headings (anything with textContent or innerHTML)
+- Form elements:
+  - Input (including checkbox, radio)
+  - Textarea
+  - Select
+
 ### Basic usage
 
 ```html
