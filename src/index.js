@@ -61,7 +61,7 @@ export default (config = {}) => {
       const lastprop = [...propPath].pop();
       // Set the DOM Reference with the same name of the data-bind attribute with domRefPrefix ($)
       const DOMRefPath = propPathString
-        .replace(lastprop, `${domRefPrefix}${lastprop}`)
+        .replace(new RegExp(`${lastprop}$`), `${domRefPrefix}${lastprop}`)
         .split(pathDelimiter);
 
       // Concat the possible value to have an array of elements
