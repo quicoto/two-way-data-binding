@@ -44,6 +44,30 @@ describe(`twoWayDataBinding`, () => {
     expect($element).toHaveTextContent(`Thor`);
   });
 
+  it(`Uses a deep object with same key as dataModel`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<span data-bind="user.firstName.user"></span>`,
+      `data-bind`
+    );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        user: {
+          firstName: {
+            user: `Thor`
+          }
+        }
+      }
+    });
+
+    const $element = bindName(`user.firstName.user`);
+    expect($element).toHaveTextContent(`Thor`);
+  });
+
   it(`Uses an empty object as dataModel`, () => {
     const {
       container,
