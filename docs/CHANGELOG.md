@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/quicoto/two-way-data-binding/compare/v1.5.0...v1.5.1) (2022-08-18)
+
+
+### Bug Fixes
+
+* adds a test to cover deep nesting with same key ([f10448c](https://github.com/quicoto/two-way-data-binding/commit/f10448cbfd57c07f191d69c047318d7ef9eb6c42))
+
 # [1.5.0](https://github.com/quicoto/two-way-data-binding/compare/v1.4.1...v1.5.0) (2022-07-28)
 
 
