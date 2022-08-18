@@ -1,5 +1,5 @@
 import {
-  getValueByPath, isHTMLElement, isHTMLString, setValueByPath
+  extend, getValueByPath, isHTMLElement, isHTMLString, isObject, setValueByPath
 } from "./utils";
 
 /**
@@ -61,7 +61,7 @@ export default (config = {}) => {
       const lastprop = [...propPath].pop();
       // Set the DOM Reference with the same name of the data-bind attribute with domRefPrefix ($)
       const DOMRefPath = propPathString
-        .replace(lastprop, `${domRefPrefix}${lastprop}`)
+        .replace(new RegExp(`${lastprop}$`), `${domRefPrefix}${lastprop}`)
         .split(pathDelimiter);
 
       // Concat the possible value to have an array of elements
@@ -156,7 +156,11 @@ export default (config = {}) => {
         return data[prop];
       },
       set: (data, prop, value) => {
-        data[prop] = value;
+        if (isObject(value)) {
+          data[prop] = extend(data[prop], value);
+        } else {
+          data[prop] = value;
+        }
 
         /**
          * At this point:
