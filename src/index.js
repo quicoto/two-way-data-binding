@@ -23,11 +23,37 @@ export default (config = {}) => {
   } = config;
   let _proxy;
 
+  /**
+   * @param {HTMLElement} $element
+   * @return {boolean}
+   */
+  function isCheckboxOrRadio($element) {
+    return $element.type === `checkbox` || $element.type === `radio`;
+  }
+
+  /**
+   * @param {HTMLElement} $element
+   * @return {boolean}
+   */
+  function isPartOfGroup($element) {
+    if ($element.name) {
+      const $elements = $context.querySelectorAll(`[name=${$element.name}]`);
+
+      return $elements.length > 1;
+    }
+
+    return false;
+  }
+
+  /**
+   * @param {HTMLElement} $element
+   * @return {string}
+   */
   function propertyToGet($element) {
     let propName = ``;
 
     if ($element.tagName === `INPUT`) {
-      if ($element.type === `checkbox` || $element.type === `radio`) {
+      if (isCheckboxOrRadio($element)) {
         propName = `checked`;
       } else {
         propName = `value`;
@@ -86,15 +112,20 @@ export default (config = {}) => {
 
     $elements.forEach(($element) => {
       if ($element.tagName === `INPUT`) {
-        if ($element.type === `checkbox` || $element.type === `radio`) {
-          let checked = value;
+        let checked = value !== `undefined` && value === ``;
 
-          // Make sure we're setting a boolean
-          if (typeof checked !== `boolean`) {
-            // Convert string to boolean
-            checked = value.toLowerCase() === `true`;
+        if (isCheckboxOrRadio($element)) {
+          if (isPartOfGroup($element)) {
+            checked = $element.value === value;
+          } else {
+            checked = value;
+
+            // Make sure we're setting a boolean
+            if (typeof checked !== `boolean`) {
+              // Convert string to boolean
+              checked = value.toLowerCase() === `true`;
+            }
           }
-
           $element.checked = checked;
         } else {
           $element.value = value;
@@ -136,7 +167,7 @@ export default (config = {}) => {
           const path = target.getAttribute(attributeModel).split(pathDelimiter);
 
           if (target.tagName === `INPUT`) {
-            if (target.type === `checkbox` || target.type === `radio`) {
+            if (isCheckboxOrRadio(target) && !isPartOfGroup(target)) {
               value = target.checked;
             }
           }

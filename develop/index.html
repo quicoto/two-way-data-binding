@@ -18,7 +18,7 @@
     <section id="welcome">
       <h1 data-custom-bind="site.general.heading">Non-JS heading</h1>
       <p data-custom-bind="site.general.description">Non-JS despcription</p>
-      <p><button id="log-state">Print state in console</button></p>
+      <p><button id="log-state">Print state</button></p>
     </section>
     <fieldset>
       <legend>Edit the texts</legend>
@@ -38,6 +38,21 @@
         <option value="cat">Cat</option>
       </select>
     </fieldset>
+    <fieldset>
+      <legend>Radiogroup</legend>
+      <p>You have selected: <span data-custom-bind="food"></span></p>
+      <input type="radio" id="food-pasta" name="food" value="pasta" data-custom-model="food" data-custom-bind="food">
+      <label for="food-pasta">Pasta</label>
+      <input type="radio" id="food-pizza" name="food" value="pizza" data-custom-model="food" data-custom-bind="food">
+      <label for="food-pizza">Pizza</label>
+      <input type="radio" id="food-risotto" name="food" value="risotto" data-custom-model="food" data-custom-bind="food">
+      <label for="food-risotto">Risotto</label>
+    </fieldset>
+
+    <input type="checkbox" id="permissions" name="permissions" data-custom-model="permissions" data-custom-bind="permissions">
+    <label for="permissions">Do you accept</label>
+    <br/>
+    <code id="print-area"></code>
   </main>
 </body>
 </html>
