@@ -568,4 +568,56 @@ describe(`twoWayDataBinding`, () => {
 
     expect(proxy.pet).toEqual(`cat`);
   });
+
+  it(`Radiogroup via JS (data-bind)`, () => {
+    const {
+      container
+    } = render(
+      `<input type="radio" id="food-pasta" name="food" value="pasta" data-model="food" data-bind="food">
+      <label for="food-pasta">Pasta</label>
+      <input type="radio" id="food-pizza" name="food" value="pizza" data-model="food" data-bind="food">
+      <label for="food-pizza">Pizza</label>
+      <input type="radio" id="food-risotto" name="food" value="risotto" data-model="food" data-bind="food">
+      <label for="food-risotto">Risotto</label>`,
+      `data-bind`
+    );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        food: `risotto`
+      }
+    });
+
+    const $element = container.querySelector(`[name="food"]:checked`);
+
+    expect($element.value).toEqual(`risotto`);
+  });
+
+  it(`Radiogroup via DOM (data-model)`, () => {
+    const {
+      container
+    } = render(
+      `<input type="radio" id="food-pasta" name="food" value="pasta" data-model="food" data-bind="food">
+      <label for="food-pasta">Pasta</label>
+      <input type="radio" id="food-pizza" name="food" value="pizza" data-model="food" data-bind="food">
+      <label for="food-pizza">Pizza</label>
+      <input type="radio" id="food-risotto" name="food" value="risotto" data-model="food" data-bind="food">
+      <label for="food-risotto">Risotto</label>`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {}
+    });
+
+    const changeEvent = document.createEvent(`Event`);
+    const $element = container.querySelector(`[id="food-pizza"]`);
+
+    changeEvent.initEvent(`change`, true, true);
+    $element.dispatchEvent(changeEvent);
+
+    expect(proxy.food).toEqual(`pizza`);
+  });
 });
