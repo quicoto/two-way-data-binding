@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/quicoto/two-way-data-binding/compare/v1.5.1...v1.6.0) (2022-08-25)
+
+
+### Features
+
+* support groups of elements ([3ec3e5d](https://github.com/quicoto/two-way-data-binding/commit/3ec3e5d15ee12754e653c92f0fa99c74d2373929))
+
 ## [1.5.1](https://github.com/quicoto/two-way-data-binding/compare/v1.5.0...v1.5.1) (2022-08-18)
 
 
