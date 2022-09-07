@@ -620,4 +620,32 @@ describe(`twoWayDataBinding`, () => {
 
     expect(proxy.food).toEqual(`pizza`);
   });
+
+  it(`Custom Event is fired`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input data-model="name" type="text" />`,
+      `data-bind`
+    );
+
+    twoWayDataBinding({
+      $context: container
+    });
+
+    const $input = bindName(`name`, `data-model`);
+    const changeEvent = document.createEvent(`Event`);
+    let customValue = false;
+
+    $input.addEventListener(`twowaydatabinding:change`, () => {
+      customValue = true;
+    });
+
+    changeEvent.initEvent(`change`, true, true);
+    $input.value = `Ricard`;
+    $input.dispatchEvent(changeEvent);
+
+    expect(customValue).toEqual(true);
+  });
 });

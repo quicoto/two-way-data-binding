@@ -7,6 +7,7 @@ import {
  * @param {HTMLElement} [config.$context]
  * @param {string} [config.attributeBind]
  * @param {string} [config.attributeModel]
+ * @param {string} [config.customEventPrefix]
  * @param {object} [config.dataModel]
  * @param {string[]} [config.events]
  * @param {string} [config.pathDelimiter]
@@ -16,6 +17,7 @@ export default (config = {}) => {
     $context = document,
     attributeBind = `data-bind`,
     attributeModel = `data-model`,
+    customEventPrefix = `twowaydatabinding`,
     dataModel = {},
     domRefPrefix = `$`,
     events = [`keyup`, `change`],
@@ -160,10 +162,10 @@ export default (config = {}) => {
     events.forEach((eventName) => {
       $context.addEventListener(eventName, (DOMEvent) => {
         const { target } = DOMEvent;
+        const customEvent = document.createEvent(`Event`);
 
         if (target.hasAttribute(attributeModel)) {
           let { value } = target;
-
           const path = target.getAttribute(attributeModel).split(pathDelimiter);
 
           if (target.tagName === `INPUT`) {
@@ -173,6 +175,8 @@ export default (config = {}) => {
           }
 
           setValueByPath(value, path, _proxy);
+          customEvent.initEvent(`${customEventPrefix}:${eventName}`, true, true);
+          target.dispatchEvent(customEvent);
         }
       });
     });

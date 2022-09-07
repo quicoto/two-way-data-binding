@@ -84,6 +84,16 @@ Optional. Defines the attribute to bind to in your HTML. Defaults to `data-bind`
 
 Optional. Defines the attribute to bind to in your HTML. Defaults to `data-model`
 
+### `customEventPrefix`
+
+Optional. Defines the name of the custom event to be dispatched after it updates the state.
+
+```javascript
+$myInput.addEventListener('twowaydatabinding:change', () => {
+  // This will be fired after the native change, after we update the state
+});
+```
+
 ### `dataModel`
 
 Optional. Defines the data model. Defaults to `{}`
