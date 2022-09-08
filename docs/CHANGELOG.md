@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/quicoto/two-way-data-binding/compare/v1.6.0...v1.7.0) (2022-09-08)
+
+
+### Features
+
+* dispatch custom event after set ([991f3b5](https://github.com/quicoto/two-way-data-binding/commit/991f3b558fd51792a65dbafbb982d5511bb8f527))
+
 # [1.6.0](https://github.com/quicoto/two-way-data-binding/compare/v1.5.1...v1.6.0) (2022-08-25)
 
 
