@@ -16,11 +16,11 @@ export default (config = {}) => {
     $context = document,
     attributeBind = `data-bind`,
     attributeModel = `data-model`,
-    dataModel = {},
     domRefPrefix = `$`,
     events = [`keyup`, `change`],
     pathDelimiter = `.`
   } = config;
+  const dataModel = { ...config.dataModel };
   let _proxy;
 
   /**
