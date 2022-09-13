@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/quicoto/two-way-data-binding/compare/v1.7.0...v1.7.1) (2022-09-13)
+
+
+### Bug Fixes
+
+* avoid adding dom references to provided dataModel ([3f7551b](https://github.com/quicoto/two-way-data-binding/commit/3f7551bffbf3b71ab1b545d72171a6c60341b4fe))
+
 # [1.7.0](https://github.com/quicoto/two-way-data-binding/compare/v1.6.0...v1.7.0) (2022-09-08)
 
 
