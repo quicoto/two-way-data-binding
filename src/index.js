@@ -18,11 +18,11 @@ export default (config = {}) => {
     attributeBind = `data-bind`,
     attributeModel = `data-model`,
     customEventPrefix = `twowaydatabinding`,
-    dataModel = {},
     domRefPrefix = `$`,
     events = [`keyup`, `change`],
     pathDelimiter = `.`
   } = config;
+  const dataModel = { ...config.dataModel };
   let _proxy;
 
   /**
