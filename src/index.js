@@ -1,5 +1,5 @@
 import {
-  extend, getValueByPath, isHTMLElement, isHTMLString, isObject, setValueByPath
+  getValueByPath, isHTMLElement, isHTMLString, isObject, setValueByPath
 } from "./utils";
 
 /**
@@ -192,7 +192,7 @@ export default (config = {}) => {
       },
       set: (data, prop, value) => {
         if (isObject(value)) {
-          data[prop] = extend(data[prop], value);
+          data[prop] = { ...data[prop], ...value };
         } else {
           data[prop] = value;
         }
