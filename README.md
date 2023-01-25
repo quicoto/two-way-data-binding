@@ -115,7 +115,7 @@ The script does **not** include any polyfills.
 | Google Chrome | >= 96  |
 | Edge        | >= 92  |
 | Firefox       | >= 91 |
-| Safari        | >= 14  |
+| Safari        | >= 15.4  |
 | Opera        | >= 76  |
 | IE        | ❌  |
 

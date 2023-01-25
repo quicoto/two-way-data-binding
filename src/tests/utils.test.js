@@ -1,6 +1,5 @@
 import {
   ensureArray,
-  extend,
   getValueByPath,
   isHTMLString,
   isObject,
@@ -185,26 +184,5 @@ describe(`isObject`, () => {
     const nonObject = `This is a string, not an object`;
 
     expect(isObject(nonObject)).toBe(false);
-  });
-});
-
-//
-// extend
-//
-describe(`extend`, () => {
-  test(`Extending a deep object`, () => {
-    const object1 = { bar: { abc: `abc`, xyz: `xyz` }, foo: `foo` };
-    const object2 = { bar: { abc: `_new_abc` } };
-    const expected = { bar: { abc: `_new_abc`, xyz: `xyz` }, foo: `foo` };
-
-    expect(extend(object1, object2)).toEqual(expected);
-  });
-
-  test(`Extending flat object`, () => {
-    const object1 = { bar: `bar`, foo: 2 };
-    const object2 = { foo: 17 };
-    const expected = { bar: `bar`, foo: 17 };
-
-    expect(extend(object1, object2)).toEqual(expected);
   });
 });
