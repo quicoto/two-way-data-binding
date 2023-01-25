@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/quicoto/two-way-data-binding/compare/v1.7.1...v1.8.0) (2023-01-25)
+
+
+### Features
+
+* drop Safari 14 support ([bc79ecc](https://github.com/quicoto/two-way-data-binding/commit/bc79ecc195092f0737772ac892b7fba30b3eb92a))
+
 ## [1.7.1](https://github.com/quicoto/two-way-data-binding/compare/v1.7.0...v1.7.1) (2022-09-13)
 
 
