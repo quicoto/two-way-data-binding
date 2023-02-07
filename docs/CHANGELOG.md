@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/quicoto/two-way-data-binding/compare/v1.8.0...v1.8.1) (2023-02-07)
+
+
+### Bug Fixes
+
+* use new CustomEvent instead of deprecated createEvent ([9394206](https://github.com/quicoto/two-way-data-binding/commit/9394206c8842f4bf5cc7a0351e2488021bb2f90e))
+
 # [1.8.0](https://github.com/quicoto/two-way-data-binding/compare/v1.7.1...v1.8.0) (2023-01-25)
 
 
