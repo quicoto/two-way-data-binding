@@ -4,13 +4,15 @@ import {
 
 /**
  * @param {object} config
- * @param {HTMLElement} [config.$context]
+ * @param {Document} [config.$context]
  * @param {string} [config.attributeBind]
  * @param {string} [config.attributeModel]
  * @param {string} [config.customEventPrefix]
+ * @param {string} [config.domRefPrefix]
  * @param {object} [config.dataModel]
  * @param {string[]} [config.events]
  * @param {string} [config.pathDelimiter]
+ * @return {any}
  */
 export default (config = {}) => {
   const {
@@ -26,7 +28,7 @@ export default (config = {}) => {
   let _proxy;
 
   /**
-   * @param {HTMLElement} $element
+   * @param {HTMLFormElement} $element
    * @return {boolean}
    */
   function isCheckboxOrRadio($element) {
@@ -34,7 +36,7 @@ export default (config = {}) => {
   }
 
   /**
-   * @param {HTMLElement} $element
+   * @param {HTMLFormElement} $element
    * @return {boolean}
    */
   function isPartOfGroup($element) {
@@ -48,7 +50,7 @@ export default (config = {}) => {
   }
 
   /**
-   * @param {HTMLElement} $element
+   * @param {*} $element
    * @return {string}
    */
   function propertyToGet($element) {
@@ -107,7 +109,7 @@ export default (config = {}) => {
 
   /**
    * @param {HTMLElement[]} $elements
-   * @param {string} value
+   * @param {any} value
    */
   function updateDOM($elements, value) {
     if (typeof $elements === `undefined` || value === null) return;
@@ -162,7 +164,10 @@ export default (config = {}) => {
     events.forEach((eventName) => {
       $context.addEventListener(eventName, (DOMEvent) => {
         const { target } = DOMEvent;
-        const customEvent = document.createEvent(`Event`);
+        const customEvent = new CustomEvent(
+          `${customEventPrefix}:${eventName}`,
+          { bubbles: true, cancelable: true }
+        );
 
         if (target.hasAttribute(attributeModel)) {
           let { value } = target;
@@ -175,7 +180,6 @@ export default (config = {}) => {
           }
 
           setValueByPath(value, path, _proxy);
-          customEvent.initEvent(`${customEventPrefix}:${eventName}`, true, true);
           target.dispatchEvent(customEvent);
         }
       });
@@ -211,7 +215,7 @@ export default (config = {}) => {
     };
 
     setDOMRefsInDataModel();
-    iterateDataModelAndUpdateDOM(dataModel, updateDOM);
+    iterateDataModelAndUpdateDOM(dataModel);
     addEventListeners();
     _proxy = new Proxy(dataModel, proxyHandler);
   }
