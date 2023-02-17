@@ -4,14 +4,15 @@ import {
 
 /**
  * @param {object} config
- * @param {Document} [config.$context]
+ * @param {HTMLElement} [config.$context]
  * @param {string} [config.attributeBind]
  * @param {string} [config.attributeModel]
- * @param {string} [config.customEventPrefix]
+ * @param {string[]} [config.attributesCustomValue]
  * @param {string} [config.domRefPrefix]
  * @param {object} [config.dataModel]
  * @param {string[]} [config.events]
  * @param {string} [config.pathDelimiter]
+ * @param {function(prop: any,value: any)} [config.setCustomValueCallback]
  * @return {any}
  */
 export default (config = {}) => {
@@ -19,13 +20,53 @@ export default (config = {}) => {
     $context = document,
     attributeBind = `data-bind`,
     attributeModel = `data-model`,
-    customEventPrefix = `twowaydatabinding`,
+    attributesCustomValue = [`data-value`],
     domRefPrefix = `$`,
-    events = [`keyup`, `change`],
+    events = [`change`, `keyup`],
     pathDelimiter = `.`
   } = config;
+  const CUSTOM_EVENTS = {
+    setCustomValue: `twowaydatabinding:setcustomvalue`
+  };
+  // On every event defined, generate the equivalent name with 'twowaydatabinding' prefix
+  // in order to dispatch that event after the logic is processed
+  events.forEach((event) => {
+    CUSTOM_EVENTS[event] = `twowaydatabinding:${event}`;
+  });
   const dataModel = { ...config.dataModel };
   let _proxy;
+
+  /**
+   * @param {HTMLElement} $target
+   * @param {object} options
+   * @param {string} [options.bubbles]
+   * @param {string} [options.cancelable]
+   * @param {string} [options.detail]
+   * @param {string} options.name
+   */
+  function dispatchCustomEvent($target, options) {
+    const {
+      bubbles = true, cancelable = true, detail, name
+    } = options;
+
+    $target.dispatchEvent(new CustomEvent(name, { bubbles, cancelable, detail }));
+  }
+
+  /**
+   * @param {HTMLFormElement} $element
+   * @return {boolean}
+   */
+  function hasCustomValue($element) {
+    return attributesCustomValue.some((attr) => $element.getAttributeNames().indexOf(attr) >= 0);
+  }
+
+  /**
+   * @param {HTMLFormElement} $element
+   * @return {boolean}
+   */
+  function getCustomPropertyName($element) {
+    return attributesCustomValue.find((attr) => $element.getAttributeNames().indexOf(attr) >= 0);
+  }
 
   /**
    * @param {HTMLFormElement} $element
@@ -56,14 +97,16 @@ export default (config = {}) => {
   function propertyToGet($element) {
     let propName = ``;
 
-    if ($element.tagName === `INPUT`) {
-      if (isCheckboxOrRadio($element)) {
+    if (hasCustomValue($element)) {
+      propName = getCustomPropertyName($element);
+    } else if ($element.tagName === `INPUT`) {
+      if (isCheckboxOrRadio($element) && !isPartOfGroup($element)) {
         propName = `checked`;
       } else {
         propName = `value`;
       }
     } else if ($element.tagName === `SELECT`) {
-      propName = `value`;
+      propName = `selectedOptions`;
     } else {
       propName = isHTMLString($element.innerHTML) ? `innerHTML` : `textContent`;
     }
@@ -82,7 +125,7 @@ export default (config = {}) => {
    * { foo: { $bar: HTMLElement, bar: 'bar' } }
    */
   function setDOMRefsInDataModel() {
-    const $refs = $context.querySelectorAll(`[${attributeBind}]`);
+    const $refs = Array.from($context.querySelectorAll(`[${attributeBind}]`));
 
     for (let i = 0, len = $refs.length; i < len; i += 1) {
       const $ref = $refs[i];
@@ -102,7 +145,21 @@ export default (config = {}) => {
       if (typeof getValueByPath([...propPath], dataModel) === `undefined`) {
         // Set the value that Element has in the static HTML in case is not
         // defined in the model
-        setValueByPath($ref[propertyToGet($ref)], [...propPath], dataModel);
+        const prop = propertyToGet($ref);
+        let value;
+
+        if (isPartOfGroup($ref)) {
+          const checkedValue = $refs.find(($el) => $el.name === $ref.name && $el.checked)?.value;
+
+          value = checkedValue || ``;
+        } else if (prop === `selectedOptions`) {
+          // In case of a select, set the default option or empty string
+          value = Array.from($ref[prop]).map((opt) => opt.value).join(``);
+        } else {
+          value = prop.indexOf(`data`) !== -1 ? $ref.getAttribute(prop) : $ref[prop];
+        }
+
+        setValueByPath(value, [...propPath], dataModel);
       }
     }
   }
@@ -115,6 +172,8 @@ export default (config = {}) => {
     if (typeof $elements === `undefined` || value === null) return;
 
     $elements.forEach(($element) => {
+      if (hasCustomValue($element)) return;
+
       if ($element.tagName === `INPUT`) {
         let checked = value !== `undefined` && value === ``;
 
@@ -132,11 +191,20 @@ export default (config = {}) => {
           }
           $element.checked = checked;
         } else {
+          // Regular text inputs
           $element.value = value;
         }
       } else if ($element.tagName === `SELECT`) {
-        $element.value = value;
+        // Check value is actually relevant and prevent the logic when it's a nodelist
+        if (typeof value === `string`) {
+          Array.from($element.options).forEach(($option) => {
+            if (value.indexOf($option.value) !== -1) {
+              $option.selected = true;
+            }
+          });
+        }
       } else {
+        // Elements that are not inputs nor form elements
         $element[isHTMLString(value) ? `innerHTML` : `textContent`] = value;
       }
     });
@@ -160,30 +228,54 @@ export default (config = {}) => {
     });
   }
 
+  /**
+   * @param {string} eventName
+   * @param {object} DOMEvent
+   */
+  function eventListener(eventName, DOMEvent) {
+    const { target } = DOMEvent;
+
+    if (target.hasAttribute(attributeModel)) {
+      if (hasCustomValue(target)) return;
+
+      let value;
+      const path = target.getAttribute(attributeModel).split(pathDelimiter);
+
+      if (isCheckboxOrRadio(target) && !isPartOfGroup(target)) {
+        value = target.checked;
+      } else if (target.tagName === `SELECT`) {
+        value = Array.from(target.selectedOptions).map(($opt) => $opt.value).toString();
+      } else {
+        value = target.value;
+      }
+
+      setValueByPath(value, [...path], _proxy);
+
+      if (CUSTOM_EVENTS[eventName]) {
+        dispatchCustomEvent(target, { name: CUSTOM_EVENTS[eventName] });
+      }
+    }
+  }
+
+  /**
+   * @param {CustomEvent} DOMEvent
+   */
+  function onSetCustomValue(DOMEvent) {
+    const { detail, target } = DOMEvent;
+
+    setValueByPath(detail.value, detail.path.split(pathDelimiter), _proxy);
+    dispatchCustomEvent(target, { name: CUSTOM_EVENTS.change });
+  }
+
   function addEventListeners() {
     events.forEach((eventName) => {
       $context.addEventListener(eventName, (DOMEvent) => {
-        const { target } = DOMEvent;
-        const customEvent = new CustomEvent(
-          `${customEventPrefix}:${eventName}`,
-          { bubbles: true, cancelable: true }
-        );
-
-        if (target.hasAttribute(attributeModel)) {
-          let { value } = target;
-          const path = target.getAttribute(attributeModel).split(pathDelimiter);
-
-          if (target.tagName === `INPUT`) {
-            if (isCheckboxOrRadio(target) && !isPartOfGroup(target)) {
-              value = target.checked;
-            }
-          }
-
-          setValueByPath(value, path, _proxy);
-          target.dispatchEvent(customEvent);
-        }
+        eventListener(eventName, DOMEvent);
       });
     });
+
+    // Be prepared to react when any consumer dispatches twowaydatabinding:setcustomvalue
+    $context.addEventListener(CUSTOM_EVENTS.setCustomValue, onSetCustomValue);
   }
 
   function init() {
@@ -192,6 +284,7 @@ export default (config = {}) => {
         if (typeof data[prop] === `object` && data[prop] !== null && !isHTMLElement(data[prop])) {
           return new Proxy(data[prop], proxyHandler);
         }
+
         return data[prop];
       },
       set: (data, prop, value) => {
@@ -209,7 +302,9 @@ export default (config = {}) => {
          * In 'data' the property named as 'prop' prefixed with '$'
          * contains the HTML reference where to print 'value'
          */
+
         updateDOM(data[`${domRefPrefix}${prop}`], value);
+
         return true;
       }
     };

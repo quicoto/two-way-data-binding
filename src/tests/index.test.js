@@ -240,11 +240,9 @@ describe(`twoWayDataBinding`, () => {
 
     const element = bindName(`site.name`);
     const $input = bindName(`site.name`, `data-model`);
-    const changeEvent = document.createEvent(`Event`);
 
-    changeEvent.initEvent(`change`, true, true);
     $input.value = `Ricard`;
-    $input.dispatchEvent(changeEvent);
+    $input.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
 
     expect($input).toHaveValue(`Ricard`);
     expect(element).toHaveTextContent(`Ricard`);
@@ -306,13 +304,10 @@ describe(`twoWayDataBinding`, () => {
       }
     });
 
-    const changeEvent = document.createEvent(`Event`);
     const $input = bindName(`name`);
 
     $input.value = `Ricard`;
-
-    changeEvent.initEvent(`change`, true, true);
-    $input.dispatchEvent(changeEvent);
+    $input.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
 
     expect(proxy.name).toEqual(`Ricard`);
   });
@@ -370,12 +365,10 @@ describe(`twoWayDataBinding`, () => {
       $context: container
     });
 
-    const changeEvent = document.createEvent(`Event`);
     const $input = bindName(`areYouThor`);
 
-    changeEvent.initEvent(`change`, true, true);
     $input.checked = true;
-    $input.dispatchEvent(changeEvent);
+    $input.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
 
     expect(proxy.areYouThor).toEqual(true);
   });
@@ -393,12 +386,10 @@ describe(`twoWayDataBinding`, () => {
       $context: container
     });
 
-    const changeEvent = document.createEvent(`Event`);
     const $input = bindName(`areYouThor`);
 
-    changeEvent.initEvent(`change`, true, true);
     $input.checked = false;
-    $input.dispatchEvent(changeEvent);
+    $input.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
 
     expect(proxy.areYouThor).toEqual(false);
   });
@@ -504,12 +495,10 @@ describe(`twoWayDataBinding`, () => {
     });
 
     const $element = bindName(`myText`);
-    const changeEvent = document.createEvent(`Event`);
 
     $element.textContent = `New content`;
 
-    changeEvent.initEvent(`change`, true, true);
-    $element.dispatchEvent(changeEvent);
+    $element.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
 
     expect(proxy.myText).toEqual(`New content`);
   });
@@ -559,12 +548,9 @@ describe(`twoWayDataBinding`, () => {
     });
 
     const $element = bindName(`pet`);
-    const changeEvent = document.createEvent(`Event`);
 
     $element.value = `cat`;
-
-    changeEvent.initEvent(`change`, true, true);
-    $element.dispatchEvent(changeEvent);
+    $element.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
 
     expect(proxy.pet).toEqual(`cat`);
   });
@@ -612,11 +598,9 @@ describe(`twoWayDataBinding`, () => {
       dataModel: {}
     });
 
-    const changeEvent = document.createEvent(`Event`);
     const $element = container.querySelector(`[id="food-pizza"]`);
 
-    changeEvent.initEvent(`change`, true, true);
-    $element.dispatchEvent(changeEvent);
+    $element.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
 
     expect(proxy.food).toEqual(`pizza`);
   });
@@ -635,17 +619,57 @@ describe(`twoWayDataBinding`, () => {
     });
 
     const $input = bindName(`name`, `data-model`);
-    const changeEvent = document.createEvent(`Event`);
     let customValue = false;
 
     $input.addEventListener(`twowaydatabinding:change`, () => {
       customValue = true;
     });
 
-    changeEvent.initEvent(`change`, true, true);
     $input.value = `Ricard`;
-    $input.dispatchEvent(changeEvent);
+    $input.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
 
     expect(customValue).toEqual(true);
+  });
+
+  it(`Element with custom value attribute [data-value]`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input data-model="country" data-bind="country" data-value="ES" type="text" />`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container
+    });
+
+    const $input = bindName(`country`, `data-model`);
+
+    $input.value = `Spain (ES)`;
+    $input.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
+
+    expect(proxy.country).toEqual(`ES`);
+  });
+
+  it(`Element with custom value attribute [data-value]`, () => {
+    const {
+      container,
+      bindName
+    } = render(
+      `<input data-model="country" data-bind="country" data-value="ES" type="text" />`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container
+    });
+
+    const $input = bindName(`country`, `data-model`);
+
+    $input.value = `Spain (ES)`;
+    $input.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
+
+    expect(proxy.country).toEqual(`ES`);
   });
 });
