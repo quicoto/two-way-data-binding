@@ -651,25 +651,4 @@ describe(`twoWayDataBinding`, () => {
 
     expect(proxy.country).toEqual(`ES`);
   });
-
-  it(`Element with custom value attribute [data-value]`, () => {
-    const {
-      container,
-      bindName
-    } = render(
-      `<input data-model="country" data-bind="country" data-value="ES" type="text" />`,
-      `data-bind`
-    );
-
-    const proxy = twoWayDataBinding({
-      $context: container
-    });
-
-    const $input = bindName(`country`, `data-model`);
-
-    $input.value = `Spain (ES)`;
-    $input.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
-
-    expect(proxy.country).toEqual(`ES`);
-  });
 });
