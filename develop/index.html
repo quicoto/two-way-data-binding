@@ -52,6 +52,17 @@
     <input type="checkbox" id="permissions" name="permissions" data-custom-model="permissions" data-custom-bind="permissions">
     <label for="permissions">Do you accept</label>
     <br/>
+
+    <label for="country">Enter your country</label>
+    <input id="country" list="countries" data-custom-model="country" data-custom-bind="country" data-value>
+    <datalist id="countries">
+      <option data-value="ES">Spain (ES)</option>
+      <option data-value="US">United States (US)</option>
+      <option data-value="AR">Argentina (AR)</option>
+      <option data-value="DE">Germany (DE)</option>
+      <option data-value="BR">Brasil (BR)</option>
+    </datalist>
+    <br/>
     <code id="print-area"></code>
   </main>
 </body>

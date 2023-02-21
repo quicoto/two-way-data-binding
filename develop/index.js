@@ -23,6 +23,25 @@ document.addEventListener(`click`, (event) => {
     printArea.textContent = JSON.stringify(state, null, `\t`);
   }
 });
+document.addEventListener(`change`, (event) => {
+  const { target } = event;
+
+  if (target.id === `country`) {
+    const listName = target.getAttribute(`list`);
+    const $list = document.querySelector(`datalist#${listName}`);
+    const dataValue = Array
+      .from($list.options)
+      .find(($opt) => $opt.innerText === target.value)
+      .getAttribute(`data-value`);
+
+    target.setAttribute(`data-value`, dataValue);
+    target.dispatchEvent(new CustomEvent(`twowaydatabinding:setcustomvalue`, {
+      bubbles: true,
+      cancelable: true,
+      detail: { path: target.getAttribute(config.attributeModel), value: dataValue }
+    }));
+  }
+});
 
 setInterval(() => {
   // eslint-disable-next-line no-console
