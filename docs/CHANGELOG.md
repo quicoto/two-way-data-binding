@@ -1,3 +1,17 @@
+# [2.0.0](https://github.com/quicoto/two-way-data-binding/compare/v1.8.1...v2.0.0) (2023-02-21)
+
+
+### Build System
+
+* customAttributes to prevent model being updated on every event ([14ba86a](https://github.com/quicoto/two-way-data-binding/commit/14ba86a97bfe86720dcaf59b6904fad6bf64599c))
+
+
+### BREAKING CHANGES
+
+* custom events names are no longer editable
+
+they are fixed to twowaydatabinding:<eventname>. When using them, set a listener with twowaydatabinding:<eventname> as event name
+
 ## [1.8.1](https://github.com/quicoto/two-way-data-binding/compare/v1.8.0...v1.8.1) (2023-02-07)
 
 
