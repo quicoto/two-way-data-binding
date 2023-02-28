@@ -4,6 +4,32 @@ Thanks for choosing to contribute!
 
 The following are a set of guidelines to follow when contributing to this project.
 
+## Commit message Convention
+
+```
+<type>(<scope>): <short summary>
+│       │             │
+│       │             └─⫸ Summary in present tense. Not capitalized. No period at the end.
+│       │
+│       └─⫸ Commit Scope (optional): project|based|list
+│
+└─⫸ Commit Type: build|ci|docs|feat|fix|perf|refactor|test
+```
+
+**Commit Message Footer**
+
+The footer can contain information about breaking changes and deprecations and is also the place to reference GitHub issues, Jira tickets, and other PRs that this commit closes or is related to.
+For example:
+
+```
+BREAKING CHANGE: <breaking change summary>
+<BLANK LINE>
+<breaking change description + migration instructions>
+<BLANK LINE>
+<BLANK LINE>
+Fixes #<issue number>
+```
+
 ## Code Of Conduct
 
 This project adheres to the [code of conduct](CODE_OF_CONDUCT.md). By participating,
