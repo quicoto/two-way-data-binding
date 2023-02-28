@@ -172,7 +172,13 @@ export default (config = {}) => {
     if (typeof $elements === `undefined` || value === null) return;
 
     $elements.forEach(($element) => {
-      if (hasCustomValue($element)) return;
+      if (hasCustomValue($element)) {
+        const attr = propertyToGet($element);
+
+        $element.setAttribute(attr, value);
+
+        return;
+      }
 
       if ($element.tagName === `INPUT`) {
         let checked = value !== `undefined` && value === ``;
