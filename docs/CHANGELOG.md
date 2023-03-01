@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/quicoto/two-way-data-binding/compare/v2.0.0...v2.1.0) (2023-03-01)
+
+
+### Features
+
+* set custom attribute and the value on setting value to proxy property ([3487e4b](https://github.com/quicoto/two-way-data-binding/commit/3487e4b91128ce4721e702934f7859c3c14b59b9))
+
 # [2.0.0](https://github.com/quicoto/two-way-data-binding/compare/v1.8.1...v2.0.0) (2023-02-21)
 
 
