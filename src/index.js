@@ -269,8 +269,10 @@ export default (config = {}) => {
   function onSetCustomValue(DOMEvent) {
     const { detail, target } = DOMEvent;
 
-    setValueByPath(detail.value, detail.path.split(pathDelimiter), _proxy);
-    dispatchCustomEvent(target, { name: CUSTOM_EVENTS.change });
+    if (target.hasAttribute(attributeModel) || target.hasAttribute(attributeBind)) {
+      setValueByPath(detail.value, detail.path.split(pathDelimiter), _proxy);
+      dispatchCustomEvent(target, { name: CUSTOM_EVENTS.change });
+    }
   }
 
   function addEventListeners() {
