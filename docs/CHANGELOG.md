@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/quicoto/two-way-data-binding/compare/v2.1.0...v2.1.1) (2023-05-12)
+
+
+### Bug Fixes
+
+* check if data-value element needs to be processed ([871527b](https://github.com/quicoto/two-way-data-binding/commit/871527b4921ce7a3d39e6f20d6f174c4f179c3f9))
+
 # [2.1.0](https://github.com/quicoto/two-way-data-binding/compare/v2.0.0...v2.1.0) (2023-03-01)
 
 
