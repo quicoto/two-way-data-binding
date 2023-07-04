@@ -159,7 +159,11 @@ export default (config = {}) => {
           value = prop.indexOf(`data`) !== -1 ? $ref.getAttribute(prop) : $ref[prop];
         }
 
-        setValueByPath(value, [...propPath], dataModel);
+        setValueByPath(
+          typeof value === `string` ? value.trim() : value,
+          [...propPath],
+          dataModel
+        );
       }
     }
   }
