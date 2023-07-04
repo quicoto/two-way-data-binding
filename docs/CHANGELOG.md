@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/quicoto/two-way-data-binding/compare/v2.1.1...v2.1.2) (2023-07-04)
+
+
+### Bug Fixes
+
+* trim empty strings ([7af333c](https://github.com/quicoto/two-way-data-binding/commit/7af333c556b534f5d8984fe988a295d25b7c761b)), closes [#45](https://github.com/quicoto/two-way-data-binding/issues/45)
+
 ## [2.1.1](https://github.com/quicoto/two-way-data-binding/compare/v2.1.0...v2.1.1) (2023-05-12)
 
 
