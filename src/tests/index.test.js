@@ -672,4 +672,21 @@ describe(`twoWayDataBinding`, () => {
     expect($input.getAttribute(`data-twowayvalue`)).toEqual(`Germany (DE)`);
     expect($input.value).toEqual(`Spain (ES)`);
   });
+
+  it(`Empty HTML line breaks are trimmed when saved to state`, () => {
+    const {
+      container
+    } = render(
+      `<p data-bind="description">
+
+      </p>`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container
+    });
+
+    expect(proxy.description).toEqual(``);
+  });
 });
