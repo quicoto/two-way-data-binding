@@ -1,6 +1,6 @@
 {
   "name": "two-way-data-binding",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Minimal two way data binding in vanilla JS",
   "license": "MIT",
   "private": false,
