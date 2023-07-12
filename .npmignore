@@ -1,9 +1,12 @@
+.editorconfig
 .eslintrc
+.eslintrc.json
 .git
 .github
 .nyc_output
 .prettierignore
 .prettierrc
+.releaserc
 **/.git/
 **/node_modules/
 /.husky
