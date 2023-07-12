@@ -1,3 +1,10 @@
+## [2.1.3](https://github.com/quicoto/two-way-data-binding/compare/v2.1.2...v2.1.3) (2023-07-12)
+
+
+### Bug Fixes
+
+* ignores files for final package ([61e09ea](https://github.com/quicoto/two-way-data-binding/commit/61e09eab3723f324be8ee77c0e435f6680b701fd)), closes [#49](https://github.com/quicoto/two-way-data-binding/issues/49)
+
 ## [2.1.2](https://github.com/quicoto/two-way-data-binding/compare/v2.1.1...v2.1.2) (2023-07-04)
 
 
