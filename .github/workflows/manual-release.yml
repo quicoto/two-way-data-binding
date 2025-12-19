@@ -1,19 +1,24 @@
-name: Manual Release
+name: Release
+
 on:
-  workflow_dispatch:
-    inputs:
-      dryrun:
-        description: 'DryRun'
-        required: true
-        default: 'false'
+  push:
+    branches:
+      - main
+
 jobs:
   release:
     name: Test, Build and Release
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     strategy:
       matrix:
         os: [ ubuntu-latest ]
         node-version: [ 24.x ]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -30,14 +35,15 @@ jobs:
       - name: Run Lint
         run: npm run lint --if-present
       - name: Release
-        uses: cycjimmy/semantic-release-action@v6
+        uses: cycjimmy/semantic-release-action@v3
         with:
-          dry_run: ${{ github.event.inputs.dryrun == 'true' }}
+          dry_run: false
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
           GIT_AUTHOR_NAME: github-actions
           GIT_AUTHOR_EMAIL: github-actions@github.com
           GIT_COMMITTER_NAME: github-actions
