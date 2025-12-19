@@ -1,6 +1,6 @@
 import {
   getValueByPath, isHTMLElement, isHTMLString, isObject, setValueByPath
-} from "./utils";
+} from "./utils.js";
 
 /**
  * @param {object} config
@@ -36,10 +36,29 @@ export default (config = {}) => {
   const dataModel = { ...config.dataModel };
   let _proxy;
 
+  // Convert attributesCustomValue array to Set for O(1) lookups
+  const customValueAttrsSet = new Set(attributesCustomValue);
+
+  // Memoize path splitting to avoid repeated split operations
+  const pathCache = new Map();
+
+  /**
+   * @param {string} pathString
+   * @return {string[]}
+   */
+  function splitPath(pathString) {
+    let path = pathCache.get(pathString);
+    if (!path) {
+      path = pathString.split(pathDelimiter);
+      pathCache.set(pathString, path);
+    }
+    // Return a copy to prevent mutations affecting cached array
+    return path.slice();
+  }
+
   /**
    * @param {HTMLElement} $target
    * @param {object} options
-   * @param {string} [options.bubbles]
    * @param {string} [options.cancelable]
    * @param {string} [options.detail]
    * @param {string} options.name
@@ -57,15 +76,29 @@ export default (config = {}) => {
    * @return {boolean}
    */
   function hasCustomValue($element) {
-    return attributesCustomValue.some((attr) => $element.getAttributeNames().indexOf(attr) >= 0);
+    const attrNames = $element.getAttributeNames();
+    const len = attrNames.length;
+    for (let i = 0; i < len; i += 1) {
+      if (customValueAttrsSet.has(attrNames[i])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
    * @param {HTMLFormElement} $element
-   * @return {boolean}
+   * @return {string|undefined}
    */
   function getCustomPropertyName($element) {
-    return attributesCustomValue.find((attr) => $element.getAttributeNames().indexOf(attr) >= 0);
+    const attrNames = $element.getAttributeNames();
+    const len = attrNames.length;
+    for (let i = 0; i < len; i += 1) {
+      if (customValueAttrsSet.has(attrNames[i])) {
+        return attrNames[i];
+      }
+    }
+    return undefined;
   }
 
   /**
@@ -125,43 +158,60 @@ export default (config = {}) => {
    * { foo: { $bar: HTMLElement, bar: 'bar' } }
    */
   function setDOMRefsInDataModel() {
-    const $refs = Array.from($context.querySelectorAll(`[${attributeBind}]`));
+    const $refs = $context.querySelectorAll(`[${attributeBind}]`);
+    const len = $refs.length;
 
-    for (let i = 0, len = $refs.length; i < len; i += 1) {
+    for (let i = 0; i < len; i += 1) {
       const $ref = $refs[i];
       const propPathString = $ref.getAttribute(attributeBind);
-      const propPath = propPathString.split(pathDelimiter);
-      const lastprop = [...propPath].pop();
+      const propPath = splitPath(propPathString);
+      const lastPropIdx = propPath.length - 1;
+      const lastprop = propPath[lastPropIdx];
       // Set the DOM Reference with the same name of the data-bind attribute with domRefPrefix ($)
-      const DOMRefPath = propPathString
-        .replace(new RegExp(`${lastprop}$`), `${domRefPrefix}${lastprop}`)
-        .split(pathDelimiter);
+      const DOMRefPath = propPath.slice();
+      DOMRefPath[lastPropIdx] = `${domRefPrefix}${lastprop}`;
 
       // Concat the possible value to have an array of elements
       const $currentRef = getValueByPath(DOMRefPath, dataModel) || ``;
 
       setValueByPath([$ref, ...$currentRef], DOMRefPath, dataModel);
 
-      if (typeof getValueByPath([...propPath], dataModel) === `undefined`) {
+      if (typeof getValueByPath(propPath, dataModel) === `undefined`) {
         // Set the value that Element has in the static HTML in case is not
         // defined in the model
         const prop = propertyToGet($ref);
         let value;
 
         if (isPartOfGroup($ref)) {
-          const checkedValue = $refs.find(($el) => $el.name === $ref.name && $el.checked)?.value;
+          const refName = $ref.name;
+          let checkedValue = ``;
 
-          value = checkedValue || ``;
+          // Search for checked element in already processed refs
+          for (let j = 0; j < len; j += 1) {
+            const $el = $refs[j];
+            if ($el.name === refName && $el.checked) {
+              checkedValue = $el.value;
+              break;
+            }
+          }
+
+          value = checkedValue;
         } else if (prop === `selectedOptions`) {
           // In case of a select, set the default option or empty string
-          value = Array.from($ref[prop]).map((opt) => opt.value).join(``);
+          const selectedOpts = $ref[prop];
+          const optsLen = selectedOpts.length;
+          const values = new Array(optsLen);
+          for (let k = 0; k < optsLen; k += 1) {
+            values[k] = selectedOpts[k].value;
+          }
+          value = values.join(``);
         } else {
           value = prop.indexOf(`data`) !== -1 ? $ref.getAttribute(prop) : $ref[prop];
         }
 
         setValueByPath(
           typeof value === `string` ? value.trim() : value,
-          [...propPath],
+          propPath,
           dataModel
         );
       }
@@ -207,11 +257,14 @@ export default (config = {}) => {
       } else if ($element.tagName === `SELECT`) {
         // Check value is actually relevant and prevent the logic when it's a nodelist
         if (typeof value === `string`) {
-          Array.from($element.options).forEach(($option) => {
+          const options = $element.options;
+          const optLen = options.length;
+          for (let i = 0; i < optLen; i += 1) {
+            const $option = options[i];
             if (value.indexOf($option.value) !== -1) {
               $option.selected = true;
             }
-          });
+          }
         }
       } else {
         // Elements that are not inputs nor form elements
@@ -249,17 +302,23 @@ export default (config = {}) => {
       if (hasCustomValue(target)) return;
 
       let value;
-      const path = target.getAttribute(attributeModel).split(pathDelimiter);
+      const path = splitPath(target.getAttribute(attributeModel));
 
       if (isCheckboxOrRadio(target) && !isPartOfGroup(target)) {
         value = target.checked;
       } else if (target.tagName === `SELECT`) {
-        value = Array.from(target.selectedOptions).map(($opt) => $opt.value).toString();
+        const selectedOpts = target.selectedOptions;
+        const len = selectedOpts.length;
+        const values = new Array(len);
+        for (let i = 0; i < len; i += 1) {
+          values[i] = selectedOpts[i].value;
+        }
+        value = values.toString();
       } else {
         value = target.value;
       }
 
-      setValueByPath(value, [...path], _proxy);
+      setValueByPath(value, path, _proxy);
 
       if (CUSTOM_EVENTS[eventName]) {
         dispatchCustomEvent(target, { name: CUSTOM_EVENTS[eventName] });
@@ -274,7 +333,7 @@ export default (config = {}) => {
     const { detail, target } = DOMEvent;
 
     if (target.hasAttribute(attributeModel) || target.hasAttribute(attributeBind)) {
-      setValueByPath(detail.value, detail.path.split(pathDelimiter), _proxy);
+      setValueByPath(detail.value, splitPath(detail.path), _proxy);
       dispatchCustomEvent(target, { name: CUSTOM_EVENTS.change });
     }
   }
@@ -291,17 +350,27 @@ export default (config = {}) => {
   }
 
   function init() {
+    // Cache proxies to avoid creating new ones on every property access
+    const proxyCache = new WeakMap();
+
     const proxyHandler = {
       get: (data, prop) => {
         if (typeof data[prop] === `object` && data[prop] !== null && !isHTMLElement(data[prop])) {
-          return new Proxy(data[prop], proxyHandler);
+          let proxy = proxyCache.get(data[prop]);
+          if (!proxy) {
+            proxy = new Proxy(data[prop], proxyHandler);
+            proxyCache.set(data[prop], proxy);
+          }
+          return proxy;
         }
 
         return data[prop];
       },
       set: (data, prop, value) => {
-        if (isObject(value)) {
-          data[prop] = { ...data[prop], ...value };
+        // Only merge if both existing and new values are objects
+        if (isObject(value) && isObject(data[prop])) {
+          // Merge properties instead of creating new object when necessary
+          Object.assign(data[prop], value);
         } else {
           data[prop] = value;
         }
