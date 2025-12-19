@@ -21,7 +21,11 @@ export function isHTMLElement(obj) {
  * @return  {boolean}
  */
 export function isHTMLString(string) {
-  return /<[a-z]+[^>]*>/gm.test(string?.trim());
+  // Early exit for non-strings, empty strings, or strings without '<'
+  if (!string || typeof string !== `string`) return false;
+  if (string.indexOf(`<`) === -1) return false;
+
+  return /<[a-z]+[^>]*>/gm.test(string.trim());
 }
 
 /**
