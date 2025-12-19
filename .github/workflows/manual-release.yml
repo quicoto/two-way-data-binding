@@ -1,10 +1,11 @@
-name: Release
-
+name: Manual Release
 on:
-  push:
-    branches:
-      - main
-
+  workflow_dispatch:
+    inputs:
+      dryrun:
+        description: 'DryRun'
+        required: true
+        default: 'false'
 jobs:
   release:
     name: Test, Build and Release
@@ -18,7 +19,6 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         node-version: [ 24.x ]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -35,9 +35,9 @@ jobs:
       - name: Run Lint
         run: npm run lint --if-present
       - name: Release
-        uses: cycjimmy/semantic-release-action@v3
+        uses: cycjimmy/semantic-release-action@v6
         with:
-          dry_run: false
+          dry_run: ${{ github.event.inputs.dryrun == 'true' }}
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
