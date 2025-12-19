@@ -6,7 +6,7 @@ export function isHTMLElement(obj) {
   try {
     // Using W3 DOM2 (works for FF, Opera and Chrome)
     return obj instanceof HTMLElement;
-  } catch (e) {
+  } catch {
     // Browsers not supporting W3 DOM2 don't have HTMLElement and
     // an exception is thrown and we end up here. Testing some
     // properties that all elements have (works on IE7)

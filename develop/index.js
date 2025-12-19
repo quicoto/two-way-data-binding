@@ -44,6 +44,5 @@ document.addEventListener(`change`, (event) => {
 });
 
 setInterval(() => {
-  // eslint-disable-next-line no-console
   console.log(JSON.stringify(state));
 }, 1000);
