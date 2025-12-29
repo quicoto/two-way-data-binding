@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/quicoto/two-way-data-binding/compare/v2.1.4...v2.2.0) (2025-12-29)
+
+
+### Features
+
+* refactor to improve performance ([a241eb9](https://github.com/quicoto/two-way-data-binding/commit/a241eb9cbdcce87dfe1a6f81529ef002cedd7789))
+
 ## [2.1.4](https://github.com/quicoto/two-way-data-binding/compare/v2.1.3...v2.1.4) (2023-07-12)
 
 
