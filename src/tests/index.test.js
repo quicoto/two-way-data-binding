@@ -605,6 +605,155 @@ describe(`twoWayDataBinding`, () => {
     expect(proxy.food).toEqual(`pizza`);
   });
 
+  it(`Checkbox group allows multiple checked values via JS (data-bind)`, () => {
+    const {
+      container
+    } = render(
+      `<input type="checkbox" id="color-red" name="color" value="red" data-model="color" data-bind="color">
+      <label for="color-red">Red</label>
+      <input type="checkbox" id="color-blue" name="color" value="blue" data-model="color" data-bind="color">
+      <label for="color-blue">Blue</label>
+      <input type="checkbox" id="color-green" name="color" value="green" data-model="color" data-bind="color">
+      <label for="color-green">Green</label>`,
+      `data-bind`
+    );
+
+    twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        color: `red,green`
+      }
+    });
+
+    const $red = container.querySelector(`[id="color-red"]`);
+    const $blue = container.querySelector(`[id="color-blue"]`);
+    const $green = container.querySelector(`[id="color-green"]`);
+
+    expect($red.checked).toBe(true);
+    expect($blue.checked).toBe(false);
+    expect($green.checked).toBe(true);
+  });
+
+  it(`Checkbox group allows multiple checked values via DOM (data-model)`, () => {
+    const {
+      container
+    } = render(
+      `<input type="checkbox" id="color-red" name="color" value="red" data-model="color" data-bind="color">
+      <label for="color-red">Red</label>
+      <input type="checkbox" id="color-blue" name="color" value="blue" data-model="color" data-bind="color">
+      <label for="color-blue">Blue</label>
+      <input type="checkbox" id="color-green" name="color" value="green" data-model="color" data-bind="color">
+      <label for="color-green">Green</label>`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {}
+    });
+
+    const $red = container.querySelector(`[id="color-red"]`);
+    const $blue = container.querySelector(`[id="color-blue"]`);
+
+    // Check red
+    $red.checked = true;
+    $red.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
+    expect(proxy.color).toEqual(`red`);
+
+    // Check blue as well — both should now be checked
+    $blue.checked = true;
+    $blue.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
+    expect(proxy.color).toEqual(`red,blue`);
+
+    // Verify DOM: both red and blue are checked, green is not
+    expect($red.checked).toBe(true);
+    expect($blue.checked).toBe(true);
+    const $green = container.querySelector(`[id="color-green"]`);
+    expect($green.checked).toBe(false);
+  });
+
+  it(`Checkbox group unchecking updates the model correctly`, () => {
+    const {
+      container
+    } = render(
+      `<input type="checkbox" id="color-red" name="color" value="red" data-model="color" data-bind="color" checked>
+      <label for="color-red">Red</label>
+      <input type="checkbox" id="color-blue" name="color" value="blue" data-model="color" data-bind="color" checked>
+      <label for="color-blue">Blue</label>`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {}
+    });
+
+    // Both start checked
+    expect(proxy.color).toEqual(`red,blue`);
+
+    // Uncheck red
+    const $red = container.querySelector(`[id="color-red"]`);
+    $red.checked = false;
+    $red.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
+
+    expect(proxy.color).toEqual(`blue`);
+    expect($red.checked).toBe(false);
+    const $blue = container.querySelector(`[id="color-blue"]`);
+    expect($blue.checked).toBe(true);
+  });
+
+  it(`Checkbox group with none checked stores empty string`, () => {
+    const {
+      container
+    } = render(
+      `<input type="checkbox" id="color-red" name="color" value="red" data-model="color" data-bind="color">
+      <label for="color-red">Red</label>
+      <input type="checkbox" id="color-blue" name="color" value="blue" data-model="color" data-bind="color">
+      <label for="color-blue">Blue</label>`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {}
+    });
+
+    expect(proxy.color).toEqual(``);
+  });
+
+  it(`Radiogroup still enforces single selection`, () => {
+    const {
+      container
+    } = render(
+      `<input type="radio" id="food-pasta" name="food" value="pasta" data-model="food" data-bind="food">
+      <label for="food-pasta">Pasta</label>
+      <input type="radio" id="food-pizza" name="food" value="pizza" data-model="food" data-bind="food">
+      <label for="food-pizza">Pizza</label>`,
+      `data-bind`
+    );
+
+    const proxy = twoWayDataBinding({
+      $context: container,
+      dataModel: {
+        food: `pizza`
+      }
+    });
+
+    const $pasta = container.querySelector(`[id="food-pasta"]`);
+    const $pizza = container.querySelector(`[id="food-pizza"]`);
+
+    expect($pasta.checked).toBe(false);
+    expect($pizza.checked).toBe(true);
+
+    // Select pasta via event
+    $pasta.checked = true;
+    $pasta.dispatchEvent(new Event(`change`, { bubbles: true, cancelable: true }));
+
+    expect(proxy.food).toEqual(`pasta`);
+    expect($pasta.checked).toBe(true);
+    expect($pizza.checked).toBe(false);
+  });
+
   it(`Custom Event is fired`, () => {
     const {
       container,
