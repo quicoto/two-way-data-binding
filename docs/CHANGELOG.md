@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/quicoto/two-way-data-binding/compare/v2.2.0...v2.3.0) (2026-04-29)
+
+
+### Features
+
+* handle multi checkboxes ([22fd911](https://github.com/quicoto/two-way-data-binding/commit/22fd911e5429f8a7a02b809f1f817b9475d63d61))
+
 # [2.2.0](https://github.com/quicoto/two-way-data-binding/compare/v2.1.4...v2.2.0) (2025-12-29)
 
 
