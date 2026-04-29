@@ -124,6 +124,14 @@ export default (config = {}) => {
   }
 
   /**
+   * @param {HTMLFormElement} $element
+   * @return {boolean}
+   */
+  function isCheckboxGroup($element) {
+    return $element.type === `checkbox` && isPartOfGroup($element);
+  }
+
+  /**
    * @param {*} $element
    * @return {string}
    */
@@ -182,7 +190,20 @@ export default (config = {}) => {
         const prop = propertyToGet($ref);
         let value;
 
-        if (isPartOfGroup($ref)) {
+        if (isCheckboxGroup($ref)) {
+          const refName = $ref.name;
+          const checkedValues = [];
+
+          // Search for all checked checkboxes in the group
+          for (let j = 0; j < len; j += 1) {
+            const $el = $refs[j];
+            if ($el.name === refName && $el.checked) {
+              checkedValues.push($el.value);
+            }
+          }
+
+          value = checkedValues.join(`,`);
+        } else if (isPartOfGroup($ref)) {
           const refName = $ref.name;
           let checkedValue = ``;
 
@@ -238,7 +259,10 @@ export default (config = {}) => {
         let checked = value !== `undefined` && value === ``;
 
         if (isCheckboxOrRadio($element)) {
-          if (isPartOfGroup($element)) {
+          if (isCheckboxGroup($element)) {
+            const values = typeof value === `string` ? value.split(`,`) : [];
+            checked = values.includes($element.value);
+          } else if (isPartOfGroup($element)) {
             checked = $element.value === value;
           } else {
             checked = value;
@@ -304,7 +328,14 @@ export default (config = {}) => {
       let value;
       const path = splitPath(target.getAttribute(attributeModel));
 
-      if (isCheckboxOrRadio(target) && !isPartOfGroup(target)) {
+      if (isCheckboxGroup(target)) {
+        const $sameNameCheckboxes = $context.querySelectorAll(`[name=${target.name}]`);
+        const checkedValues = [];
+        $sameNameCheckboxes.forEach(($cb) => {
+          if ($cb.checked) checkedValues.push($cb.value);
+        });
+        value = checkedValues.join(`,`);
+      } else if (isCheckboxOrRadio(target) && !isPartOfGroup(target)) {
         value = target.checked;
       } else if (target.tagName === `SELECT`) {
         const selectedOpts = target.selectedOptions;
