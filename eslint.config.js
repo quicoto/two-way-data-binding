@@ -24,6 +24,7 @@ export default [
       'no-underscore-dangle': `off`,
       semi: [`error`, `always`],
       'no-param-reassign': `off`,
+      'no-useless-assignment': `off`,
       quotes: [`error`, `backtick`]
     }
   }
