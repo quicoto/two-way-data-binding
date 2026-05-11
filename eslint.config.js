@@ -1,5 +1,5 @@
 import js from '@eslint/js';
-import jestPlugin from 'eslint-plugin-jest';
+import vitestPlugin from '@vitest/eslint-plugin';
 import globals from 'globals';
 
 export default [
@@ -12,12 +12,12 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.jest,
+        ...vitestPlugin.environments.env.globals,
         Proxy: true
       }
     },
     plugins: {
-      jest: jestPlugin
+      vitest: vitestPlugin
     },
     rules: {
       'comma-dangle': [`error`, `never`],

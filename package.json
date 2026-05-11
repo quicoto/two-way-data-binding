@@ -26,8 +26,8 @@
   "scripts": {
     "develop": "esbuild --bundle develop/index.js --outfile=develop/index.min.js --servedir=develop",
     "lint": "eslint .",
-    "test": "jest",
-    "watch:test": "jest --watch",
+    "test": "vitest run",
+    "watch:test": "vitest",
     "prepare": "husky install"
   },
   "keywords": [
@@ -37,16 +37,14 @@
     "model"
   ],
   "devDependencies": {
-    "@babel/preset-env": "^7.29.5",
     "@eslint/js": "^9.39.4",
     "@testing-library/jest-dom": "^6.9.1",
-    "babel-jest": "^30.4.1",
+    "@vitest/eslint-plugin": "^1.1.36",
     "esbuild": "^0.28.0",
+    "jsdom": "^26.1.0",
     "eslint": "^9.39.4",
-    "eslint-plugin-jest": "^29.15.2",
     "globals": "^17.6.0",
     "husky": "^9.1.7",
-    "jest": "^30.4.2",
-    "jest-environment-jsdom": "^30.4.1"
+    "vitest": "^3.1.4"
   }
 }
