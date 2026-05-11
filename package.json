@@ -37,16 +37,16 @@
     "model"
   ],
   "devDependencies": {
-    "@babel/preset-env": "^7.29.2",
+    "@babel/preset-env": "^7.29.5",
     "@eslint/js": "^9.39.4",
     "@testing-library/jest-dom": "^6.9.1",
-    "babel-jest": "^30.3.0",
+    "babel-jest": "^30.4.1",
     "esbuild": "^0.28.0",
     "eslint": "^9.39.4",
     "eslint-plugin-jest": "^29.15.2",
-    "globals": "^17.5.0",
+    "globals": "^17.6.0",
     "husky": "^9.1.7",
-    "jest": "^30.3.0",
-    "jest-environment-jsdom": "^30.3.0"
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1"
   }
 }
