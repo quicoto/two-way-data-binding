@@ -42,6 +42,24 @@ export default (config = {}) => {
   // Memoize path splitting to avoid repeated split operations
   const pathCache = new Map();
 
+  // Memoize `[name=...]` group lookups. DOM grouping by `name` is stable for
+  // the bound context, so the static NodeList can be reused; element `.checked`
+  // states are still read live from the cached elements.
+  const groupCache = new Map();
+
+  /**
+   * @param {string} name
+   * @return {NodeList}
+   */
+  function getGroupByName(name) {
+    let group = groupCache.get(name);
+    if (group === undefined) {
+      group = $context.querySelectorAll(`[name=${name}]`);
+      groupCache.set(name, group);
+    }
+    return group;
+  }
+
   /**
    * @param {string} pathString
    * @return {string[]}
@@ -72,25 +90,12 @@ export default (config = {}) => {
   }
 
   /**
-   * @param {HTMLFormElement} $element
-   * @return {boolean}
-   */
-  function hasCustomValue($element) {
-    const attrNames = $element.getAttributeNames();
-    const len = attrNames.length;
-    for (let i = 0; i < len; i += 1) {
-      if (customValueAttrsSet.has(attrNames[i])) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
+   * Returns the matching custom-value attribute name for an element in a single
+   * attribute scan, or `undefined` when none is present.
    * @param {HTMLFormElement} $element
    * @return {string|undefined}
    */
-  function getCustomPropertyName($element) {
+  function getCustomValueAttr($element) {
     const attrNames = $element.getAttributeNames();
     const len = attrNames.length;
     for (let i = 0; i < len; i += 1) {
@@ -99,6 +104,14 @@ export default (config = {}) => {
       }
     }
     return undefined;
+  }
+
+  /**
+   * @param {HTMLFormElement} $element
+   * @return {boolean}
+   */
+  function hasCustomValue($element) {
+    return getCustomValueAttr($element) !== undefined;
   }
 
   /**
@@ -115,9 +128,7 @@ export default (config = {}) => {
    */
   function isPartOfGroup($element) {
     if ($element.name) {
-      const $elements = $context.querySelectorAll(`[name=${$element.name}]`);
-
-      return $elements.length > 1;
+      return getGroupByName($element.name).length > 1;
     }
 
     return false;
@@ -137,9 +148,10 @@ export default (config = {}) => {
    */
   function propertyToGet($element) {
     let propName = ``;
+    const customAttr = getCustomValueAttr($element);
 
-    if (hasCustomValue($element)) {
-      propName = getCustomPropertyName($element);
+    if (customAttr !== undefined) {
+      propName = customAttr;
     } else if ($element.tagName === `INPUT`) {
       if (isCheckboxOrRadio($element) && !isPartOfGroup($element)) {
         propName = `checked`;
@@ -247,10 +259,9 @@ export default (config = {}) => {
     if (typeof $elements === `undefined` || value === null) return;
 
     $elements.forEach(($element) => {
-      if (hasCustomValue($element)) {
-        const attr = propertyToGet($element);
-
-        $element.setAttribute(attr, value);
+      const customAttr = getCustomValueAttr($element);
+      if (customAttr !== undefined) {
+        $element.setAttribute(customAttr, value);
 
         return;
       }
@@ -307,7 +318,7 @@ export default (config = {}) => {
    */
   function iterateDataModelAndUpdateDOM(data) {
     Object.keys(data).forEach((key) => {
-      if (Array.isArray(data[key]) && data[key]?.every(($el) => isHTMLElement($el))) {
+      if (Array.isArray(data[key]) && data[key]?.every(isHTMLElement)) {
         updateDOM(data[key], data[key.replace(domRefPrefix, ``)]);
       } else if (typeof data[key] === `object` && data[key] !== null) {
         iterateDataModelAndUpdateDOM(data[key]);
@@ -329,7 +340,7 @@ export default (config = {}) => {
       const path = splitPath(target.getAttribute(attributeModel));
 
       if (isCheckboxGroup(target)) {
-        const $sameNameCheckboxes = $context.querySelectorAll(`[name=${target.name}]`);
+        const $sameNameCheckboxes = getGroupByName(target.name);
         const checkedValues = [];
         $sameNameCheckboxes.forEach(($cb) => {
           if ($cb.checked) checkedValues.push($cb.value);

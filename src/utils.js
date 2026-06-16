@@ -16,6 +16,11 @@ export function isHTMLElement(obj) {
   }
 }
 
+// Hoisted, stateless regex. The previous /gm flags were unnecessary (no
+// multiline anchors) and the global flag makes `.test()` stateful via
+// lastIndex, so they are dropped here.
+const HTML_TAG_REGEX = /<[a-z]+[^>]*>/;
+
 /**
  * @param  {string} string
  * @return  {boolean}
@@ -25,7 +30,7 @@ export function isHTMLString(string) {
   if (!string || typeof string !== `string`) return false;
   if (string.indexOf(`<`) === -1) return false;
 
-  return /<[a-z]+[^>]*>/gm.test(string.trim());
+  return HTML_TAG_REGEX.test(string.trim());
 }
 
 /**
@@ -81,24 +86,32 @@ export function ensureArray(possibleArray) {
 }
 
 /**
+ * @param {*} prev
+ * @param {*} curr
+ * @return {*}
+ */
+function pathReducer(prev, curr) {
+  if (prev && typeof prev === `object`) {
+    if (prev.constructor === Array) {
+      return prev[+curr];
+    }
+
+    return prev[curr];
+  }
+
+  return undefined;
+}
+
+/**
  * @param {string[]} path
  * @param {object|array} object
  * @param {*} [fallback]
  * @return {*}
  */
 export function getValueByPath(path, object, fallback) {
-  const reducer = (prev, curr) => {
-    if (prev && typeof prev === `object`) {
-      if (prev.constructor === Array) {
-        return prev[+curr];
-      }
-
-      return prev[curr];
-    }
-
-    return undefined;
-  };
-  const value = ensureArray(path).reduce(reducer, object);
+  // Avoid the ensureArray allocation when the path is already an array.
+  const segments = Array.isArray(path) ? path : ensureArray(path);
+  const value = segments.reduce(pathReducer, object);
 
   return typeof value === `undefined` ? fallback : value;
 }
